@@ -1,0 +1,24 @@
+import streamlit as st
+from captcha.image import ImageCaptcha
+import random
+import string
+
+
+class CptchaWebApp:
+    def __init__(self):
+        self.captcha_text = string()
+        self.image = ImageCaptcha(fonts=[font])
+
+    def callback(self, msg):
+        st.write('test')
+        self.captcha_text = random_text()
+        self.image.write(self.captcha_text, 'cptcha_out.png')
+        st.image('cpthca_out.png')
+
+    def random_text(self):
+        length = 8
+        random_str = ''.join((random.choice('ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890') for i in range(length)))
+        return random_str
+
+if __name__ == '__main__':
+    CptchaWebApp()

@@ -1,3 +1,7 @@
 # requirements.txt
-mysqlclient==x.x.x
-SQLAlchemy==x.x.x
+streamlit
+random
+time
+captcha.image import ImageCaptcha
+PIL
+mysql.connector

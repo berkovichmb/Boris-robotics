@@ -4,9 +4,13 @@ import random
 import time
 from captcha.image import ImageCaptcha
 from PIL import Image
+import mysql.connector
 
 class Game:
     def __init__(self):
+        self.conn = st.experimental_connection('mysql', type='sql')
+        self.cursor = self.conn.cursor()
+
         #initializes columns and answer variable
         self.col1, self.col2, self.col3 = st.columns((1, 2, 1))
         self.answer = ""
@@ -25,7 +29,7 @@ class Game:
 
         #initializes state variable to keep track of amount of runs game has gone through
         if 'run_num' not in st.session_state:
-            st.session_state.run_num = 1
+            st.session_state.run_num = 0
 
         if 'run_image' not in st.session_state:
             st.session_state.run_image = Image.open("base.png")
@@ -39,6 +43,30 @@ class Game:
         if 'text_input' not in st.session_state:
             st.session_state.text_input = "blank"
 
+        if 'sql_money' not in st.session_state:
+            st.session_state.sql_money = 0
+
+        if 'time_choice' not in st.session_state:
+            st.session_state.time_choice = 0
+
+        if 'table_num' not in st.session_state:
+            st.session_state.table_num = random.randint(0,999999)
+
+    def sql_table_updater(self, success):
+        choice = "Robot"
+        insert_captcha_query = """
+                INSERT INTO CAPTCHAgame
+                (Iteration, CAPTCHA, Time, Decision, WinLose, Money, UserNum)
+                VALUES ( %s, %s, %s, %s, %s, %s, %s)
+                """
+
+        game_records = [
+            (st.session_state.run_num, st.session_state.the_answer, st.session_state.time_choice, choice, success, st.session_state.sql_money, st.session_state.table_num)
+        ]
+
+        with self.conn.cursor() as cursor:
+            cursor.executemany(insert_captcha_query, game_records)
+            self.conn.commit()
 
     #prints captcha image
     def Captcha_print(self):
@@ -69,6 +97,8 @@ class Game:
     def answer_self(self):
         self.container_robot.empty()
         self.container_captcha.empty()
+        self.end = time.time()
+        st.session_state.time_choice = self.end-self.start
         st.session_state.choice = 1
 
     #This clears the container after the prize screen
@@ -77,7 +107,7 @@ class Game:
 
     #function for winning screen
     def win(self):
-        st.session_state.run_num += 1
+        self.end = time.time()
         self.container_robot.empty()
         time.sleep(0.01)
         self.container_captcha.empty()
@@ -92,11 +122,15 @@ class Game:
             st.title("You got 1$")
             im_money = Image.open("money.png")
             st.image(im_money)
+        st.session_state.sql_money += 1
+        st.session_state.time_choice = self.end - self.start
+        self.sql_table_updater("W")
+        st.session_state.run_num += 1
         time.sleep(5)
 
     #function for losing screen
     def loser(self):
-        st.session_state.run_num += 1
+        self.end = time.time()
         self.container_robot.empty()
         time.sleep(0.01)
         self.container_captcha.empty()
@@ -111,6 +145,11 @@ class Game:
             st.title("You lost 1$")
             im_wrong = Image.open("wrong.png")
             st.image(im_wrong)
+        if st.session_state.sql_money > 0:
+            st.session_state.sql_money += -1
+        st.session_state.time_choice = self.end - self.start
+        self.sql_table_updater("L")
+        st.session_state.run_num += 1
         time.sleep(5)
 
     #first iteration
@@ -142,6 +181,7 @@ class Game:
 
         self.container_robot.empty()
         self.container_captcha.empty()
+        self.start = time.time()
 
         r = random.randint(1, 2)
         if r == 1:
@@ -152,8 +192,6 @@ class Game:
                 st.image(st.session_state.run_image)
                 submitted = st.button("Yes", on_click=self.win)
                 st.button("Input my own", key="1", on_click=self.answer_self)
-                if submitted:
-                    self.win()
         else:
             rand_answer = self.random_scramble()
             with self.container_robot.container():
@@ -163,8 +201,6 @@ class Game:
                 st.image(st.session_state.run_image)
                 submitted = st.button("Yes", on_click=self.loser)
                 st.button("Input my own", key="1", on_click=self.answer_self)
-                if submitted:
-                    self.lose()
 
     #Second run
     def run_two(self):
@@ -194,13 +230,15 @@ class Game:
         self.container_captcha.empty()
 
         r = random.randint(1, 2)
+        self.start = time.time()
+
         if r == 1:
             with self.container_robot.container():
                 st.write("Do you want me to fill this out for you?")
                 st.image(self.im_robot)
             with self.container_captcha.container():
                 st.image(st.session_state.run_image)
-                st.button("Yes", on_click=self.win)
+                submitted = st.button("Yes", on_click=self.win)
                 st.button("Input my own", key="1", on_click=self.answer_self)
         else:
             rand_answer = self.random_scramble()
@@ -209,7 +247,7 @@ class Game:
                 st.image(self.im_robot)
             with self.container_captcha.container():
                 st.image(st.session_state.run_image)
-                st.button("Yes", on_click=self.loser)
+                submitted = st.button("Yes", on_click=self.loser)
                 st.button("Input my own", key="1", on_click=self.answer_self)
 
     #This function is what runs when someone wants to input their owns answer
@@ -233,15 +271,52 @@ class Game:
     def win_lose(self):
         self.container_robot.empty()
         time.sleep(0.01)
-        st.session_state.run_num += 1
         st.session_state.choice = 0
         if self.text_input == st.session_state.the_answer:
+            st.session_state.sql_money += 1
+            success = "W"
+            choice = "Self"
+            insert_captcha_query = """
+                            INSERT INTO CAPTCHAgame
+                            (Iteration, CAPTCHA, Time, Decision, WinLose, Money, UserNum)
+                            VALUES ( %s, %s, %s, %s, %s, %s, %s)
+                            """
+
+            game_records = [
+                (st.session_state.run_num, st.session_state.the_answer, st.session_state.time_choice, choice, success,
+                 st.session_state.sql_money, st.session_state.table_num)
+            ]
+
+            with self.conn.cursor() as cursor:
+                cursor.executemany(insert_captcha_query, game_records)
+                self.conn.commit()
+            st.session_state.run_num += 1
             with self.container_captcha.container():
                 st.title("You got 1$")
                 im_money = Image.open("money.png")
                 st.image(im_money)
                 st.button("Play again")
+
         else:
+            if st.session_state.sql_money > 0:
+                st.session_state.sql_money += -1
+            success = "L"
+            choice = "Self"
+            insert_captcha_query = """
+                                        INSERT INTO CAPTCHAgame
+                                        (Iteration, CAPTCHA, Time, Decision, WinLose, Money, UserNum)
+                                        VALUES ( %s, %s, %s, %s, %s, %s, %s)
+                                        """
+
+            game_records = [
+                (st.session_state.run_num, st.session_state.the_answer, st.session_state.time_choice, choice, success,
+                 st.session_state.sql_money, st.session_state.table_num)
+            ]
+
+            with self.conn.cursor() as cursor:
+                cursor.executemany(insert_captcha_query, game_records)
+                self.conn.commit()
+            st.session_state.run_num += 1
             with self.container_captcha.container():
                 st.title("You lost 1$")
                 im_wrong = Image.open("wrong.png")

@@ -2,6 +2,6 @@
 streamlit
 random
 time
-captcha.image import ImageCaptcha
+captcha.image
 PIL
 mysql.connector

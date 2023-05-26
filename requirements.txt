@@ -1,6 +1,3 @@
 # requirements.txt
 streamlit
-time
-captcha.image
-PIL
 mysql.connector

@@ -4,4 +4,4 @@ pymysql
 mysql.connector
 captcha
 sqlalchemy
-mysql-python
+mysqlclient

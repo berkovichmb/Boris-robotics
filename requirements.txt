@@ -1,6 +1,5 @@
 # requirements.txt
 streamlit
-random
 time
 captcha.image
 PIL

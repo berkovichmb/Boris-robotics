@@ -2,4 +2,3 @@
 streamlit
 mysql.connector
 captcha
-PIL

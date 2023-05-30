@@ -1,7 +1,5 @@
 # requirements.txt
 streamlit
-pymysql
-mysql.connector
 captcha
-sqlalchemy
-mysqlclient
+google.oauth2
+googleapiclient

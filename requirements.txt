@@ -2,4 +2,4 @@
 streamlit
 captcha
 google-auth-oauthlib
-googleapiclient
+google-api-python-client

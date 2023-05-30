@@ -9,6 +9,15 @@ from googleapiclient.discovery import build
 
 class Game:
     def __init__(self):
+        #This hides the menu drop down
+        hide_menu_style = """
+                <style>
+                #MainMenu {visibility: hidden;}
+                </style>
+                """
+        st.markdown(hide_menu_style, unsafe_allow_html=True)
+        
+        #Initializing the Google sheets connection
         creds = service_account.Credentials.from_service_account_info(
             st.secrets["gcp_service_account"],
             scopes=[

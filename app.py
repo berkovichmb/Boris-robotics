@@ -4,12 +4,21 @@ import random
 import time
 from captcha.image import ImageCaptcha
 from PIL import Image
-import mysql.connector
+from google.oauth2 import service_account
+from googleapiclient.discovery import build
 
 class Game:
     def __init__(self):
-        self.conn = st.experimental_connection('mysql', type='sql')
-        self.cursor = self.conn.cursor()
+        creds = service_account.Credentials.from_service_account_info(
+            st.secrets["gcp_service_account"],
+            scopes=[
+                "https://www.googleapis.com/auth/spreadsheets",
+            ],
+        )
+
+        self.spreadsheet_id = '1XDYHfCOPz7s9etxCGA9p3JBafXsWulkwa90O8OjEtz4'
+        service = build('sheets', 'v4', credentials=creds)
+        self.sheet = service.spreadsheets()
 
         #initializes columns and answer variable
         self.col1, self.col2, self.col3 = st.columns((1, 2, 1))
@@ -29,7 +38,7 @@ class Game:
 
         #initializes state variable to keep track of amount of runs game has gone through
         if 'run_num' not in st.session_state:
-            st.session_state.run_num = 0
+            st.session_state.run_num = 1
 
         if 'run_image' not in st.session_state:
             st.session_state.run_image = Image.open("base.png")
@@ -43,8 +52,8 @@ class Game:
         if 'text_input' not in st.session_state:
             st.session_state.text_input = "blank"
 
-        if 'sql_money' not in st.session_state:
-            st.session_state.sql_money = 0
+        if 'money' not in st.session_state:
+            st.session_state.money = 0
 
         if 'time_choice' not in st.session_state:
             st.session_state.time_choice = 0
@@ -52,21 +61,6 @@ class Game:
         if 'table_num' not in st.session_state:
             st.session_state.table_num = random.randint(0,999999)
 
-    def sql_table_updater(self, success):
-        choice = "Robot"
-        insert_captcha_query = """
-                INSERT INTO CAPTCHAgame
-                (Iteration, CAPTCHA, Time, Decision, WinLose, Money, UserNum)
-                VALUES ( %s, %s, %s, %s, %s, %s, %s)
-                """
-
-        game_records = [
-            (st.session_state.run_num, st.session_state.the_answer, st.session_state.time_choice, choice, success, st.session_state.sql_money, st.session_state.table_num)
-        ]
-
-        with self.conn.cursor() as cursor:
-            cursor.executemany(insert_captcha_query, game_records)
-            self.conn.commit()
 
     #prints captcha image
     def Captcha_print(self):
@@ -122,9 +116,14 @@ class Game:
             st.title("You got 1$")
             im_money = Image.open("money.png")
             st.image(im_money)
-        st.session_state.sql_money += 1
+        st.session_state.money += 1
         st.session_state.time_choice = self.end - self.start
-        self.sql_table_updater("W")
+
+        #This is what updates Google sheets
+        stuff = [[st.session_state.run_num, st.session_state.the_answer, st.session_state.time_choice, "Robot", "W", st.session_state.money, st.session_state.table_num]]
+        res = self.sheet.values().append(spreadsheetId=self.spreadsheet_id,
+                                         range="Sheet1!A:G", valueInputOption="USER_ENTERED",
+                                         insertDataOption="INSERT_ROWS", body={"values": stuff}).execute()
         st.session_state.run_num += 1
         time.sleep(5)
 
@@ -145,10 +144,15 @@ class Game:
             st.title("You lost 1$")
             im_wrong = Image.open("wrong.png")
             st.image(im_wrong)
-        if st.session_state.sql_money > 0:
-            st.session_state.sql_money += -1
+        if st.session_state.money > 0:
+            st.session_state.money += -1
         st.session_state.time_choice = self.end - self.start
-        self.sql_table_updater("L")
+
+        #This is what updates Google sheets
+        stuff = [[st.session_state.run_num, st.session_state.the_answer, st.session_state.time_choice, "Robot", "L", st.session_state.money, st.session_state.table_num]]
+        res = self.sheet.values().append(spreadsheetId=self.spreadsheet_id,
+                                         range="Sheet1!A:G", valueInputOption="USER_ENTERED",
+                                         insertDataOption="INSERT_ROWS", body={"values": stuff}).execute()
         st.session_state.run_num += 1
         time.sleep(5)
 
@@ -273,23 +277,15 @@ class Game:
         time.sleep(0.01)
         st.session_state.choice = 0
         if self.text_input == st.session_state.the_answer:
-            st.session_state.sql_money += 1
-            success = "W"
-            choice = "Self"
-            insert_captcha_query = """
-                            INSERT INTO CAPTCHAgame
-                            (Iteration, CAPTCHA, Time, Decision, WinLose, Money, UserNum)
-                            VALUES ( %s, %s, %s, %s, %s, %s, %s)
-                            """
+            st.session_state.money += 1
 
-            game_records = [
-                (st.session_state.run_num, st.session_state.the_answer, st.session_state.time_choice, choice, success,
-                 st.session_state.sql_money, st.session_state.table_num)
-            ]
+            #This is what updates Google Sheets
+            stuff = [[st.session_state.run_num, st.session_state.the_answer, st.session_state.time_choice, "Self", "W",
+                      st.session_state.money, st.session_state.table_num]]
+            res = self.sheet.values().append(spreadsheetId=self.spreadsheet_id,
+                                             range="Sheet1!A:G", valueInputOption="USER_ENTERED",
+                                             insertDataOption="INSERT_ROWS", body={"values": stuff}).execute()
 
-            with self.conn.cursor() as cursor:
-                cursor.executemany(insert_captcha_query, game_records)
-                self.conn.commit()
             st.session_state.run_num += 1
             with self.container_captcha.container():
                 st.title("You got 1$")
@@ -298,24 +294,13 @@ class Game:
                 st.button("Play again")
 
         else:
-            if st.session_state.sql_money > 0:
-                st.session_state.sql_money += -1
-            success = "L"
-            choice = "Self"
-            insert_captcha_query = """
-                                        INSERT INTO CAPTCHAgame
-                                        (Iteration, CAPTCHA, Time, Decision, WinLose, Money, UserNum)
-                                        VALUES ( %s, %s, %s, %s, %s, %s, %s)
-                                        """
-
-            game_records = [
-                (st.session_state.run_num, st.session_state.the_answer, st.session_state.time_choice, choice, success,
-                 st.session_state.sql_money, st.session_state.table_num)
-            ]
-
-            with self.conn.cursor() as cursor:
-                cursor.executemany(insert_captcha_query, game_records)
-                self.conn.commit()
+            if st.session_state.money > 0:
+                st.session_state.money += -1
+            stuff = [[st.session_state.run_num, st.session_state.the_answer, st.session_state.time_choice, "Self", "L",
+                      st.session_state.money, st.session_state.table_num]]
+            res = self.sheet.values().append(spreadsheetId=self.spreadsheet_id,
+                                             range="Sheet1!A:G", valueInputOption="USER_ENTERED",
+                                             insertDataOption="INSERT_ROWS", body={"values": stuff}).execute()
             st.session_state.run_num += 1
             with self.container_captcha.container():
                 st.title("You lost 1$")

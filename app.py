@@ -16,7 +16,7 @@ class Game:
                 </style>
                 """
         st.markdown(hide_menu_style, unsafe_allow_html=True)
-        
+
         #Initializing the Google sheets connection
         creds = service_account.Credentials.from_service_account_info(
             st.secrets["gcp_service_account"],
@@ -47,7 +47,7 @@ class Game:
 
         #initializes state variable to keep track of amount of runs game has gone through
         if 'run_num' not in st.session_state:
-            st.session_state.run_num = 1
+            st.session_state.run_num = 0
 
         if 'run_image' not in st.session_state:
             st.session_state.run_image = Image.open("base.png")
@@ -69,6 +69,42 @@ class Game:
 
         if 'table_num' not in st.session_state:
             st.session_state.table_num = random.randint(0,999999)
+
+        if 'gender' not in st.session_state:
+            st.session_state.gender = "Male"
+
+        if 'age' not in st.session_state:
+            st.session_state.age = ""
+
+        if 'hispanic' not in st.session_state:
+            st.session_state.hispanic = "Yes"
+
+        if 'race' not in st.session_state:
+            st.session_state.race = "No primary group"
+
+        if 'edu' not in st.session_state:
+            st.session_state.edu = 'No formal education'
+
+        if 'marital' not in st.session_state:
+            st.session_state.marital = 'Single'
+
+        if 'children' not in st.session_state:
+            st.session_state.children = 'None'
+
+        if 'grndchldrn' not in st.session_state:
+            st.session_state.grndchldrn = 'None'
+
+        if 'living' not in st.session_state:
+            st.session_state.living = 'Private house/apartment/condominium'
+
+        if 'alone' not in st.session_state:
+            st.session_state.alone = 'Yes'
+
+        if 'income' not in st.session_state:
+            st.session_state.income = 'Less than $5,000'
+
+        if 'occupation' not in st.session_state:
+            st.session_state.occupation = 'Work full-time'
 
 
     #prints captcha image
@@ -325,13 +361,64 @@ class Game:
         with self.container_captcha.container():
             st.title("Thanks for playing!")
 
+    def run_demographics(self):
+        st.session_state.run_num += 1
+        with self.col2:
+            with st.form("demographics"):
+                self.yes = st.checkbox("I have read and accept the consent form [link](https://share.streamlit.io/mesmith027/streamlit_webapps/main/MC_pi/streamlit_app.py)")
+                self.gender = st.radio(
+                    "What is your gender? 👇",
+                    ["Male", "Female", "Transgender male", "Transgender female", "Non-Binary/Non-Conforming", "Prefer not to answer"], key='gender')
+                self.age = st.text_input("How old are you?", key='age')
+                self.hispanic = st.radio("Do you consider yourself Hispanic or Latino?", ["Yes", "No"], key='hispanic')
+                self.race = st.radio(
+                    "How would you describe your primary racial group?",
+                    ["No primary group", "White Caucasian", "Black/African American", "Asian",
+                    "American Indian/Alaska Native", "Native Hawaiian/Pacific Islander", "Multi-racial", "Other"], key='race')
+                self.edu = st.radio("What is your highest level of education?",
+                    ["No formal education", "Some education in school", "High school Graduate/GED", "Vocational training",
+                    "Some college/Associates degree", "Bachelors degree (BA/BS", "Masters degree (or other post graduate training)",
+                    "Doctoral degree (PhD, MD, EdD, DDS, JD, etc)"], key='edu')
+                self.marital = st.radio("What is your current marital status?",
+                                        ["Single", "Married", "Separated", "Divorced", "Cohabitating", "Widowed"], key='marital')
+                self.children = st.radio("How many children do you have?",
+                                         ["None", "1", "2", "3", "4+"], key='children')
+                self.grndch = st.radio("How many grand children do you have?",
+                                         ["None", "1", "2", "3", "4", "5+"], key='grndch')
+                self.living = st.radio("What is your current living arrangement?",
+                                       ["Private house/apartment/condominium", "Senior housing (independent",
+                                        "Assisted living", "Nursing home", "Relatives home", "Other"], key='living')
+                self.alone = st.radio("Do you live alone?",
+                                       ["Yes", "No"], key='alone')
+                self.income = st.radio("Which category best describes your yearly household income?",
+                                       ["Less than $5,000", "$5,000 - $9,999", "$10,000 - $14,999",
+                                        "$15,000 - $19,999", "$20,000 - $29,999", "$30,000 - $39,999",
+                                        "$40,000 - $49,999", "$50,000 - $59,999", "$60,000 - $69,999",
+                                        "$70,000 - $79,999", "$80,000 - $89,999", "$90,000 - $99,999",
+                                        "Over $100,000", "Don't know for sure", "Prefer not to say"], key='income')
+                self.occupation = st.radio("What is your primary occupational status?",
+                                           ["Work full-time", "Work part-time", "Retired", "Volunteer worker", "Seeking emploment/laid off/etc", "other"], key='occupation')
+                st.form_submit_button("Submit", on_click=self.submit_demo)
+
+    def submit_demo(self):
+        # This is what updates Google sheets
+        stuff = [
+            [st.session_state.table_num, st.session_state.gender, st.session_state.age, st.session_state.hispanic, st.session_state.race,
+             st.session_state.edu, st.session_state.marital, st.session_state.children,
+             st.session_state.grndch, st.session_state.living, st.session_state.alone, st.session_state.income,
+             st.session_state.occupation]]
+        res = self.sheet.values().append(spreadsheetId=self.spreadsheet_id,
+                                         range="Sheet1!J:U", valueInputOption="USER_ENTERED",
+                                         insertDataOption="INSERT_ROWS", body={"values": stuff}).execute()
 
     #This function controls which code to run
     def run(self):
         if st.session_state.choice == 1:
             self.run_choice()
         else:
-            if st.session_state.run_num <= 10:
+            if st.session_state.run_num == 0:
+                self.run_demographics()
+            elif st.session_state.run_num <= 10:
                 if st.session_state.run_num == 1:
                     self.run_one()
                 else:

@@ -17,17 +17,38 @@ class Game:
                 """
         st.markdown(hide_menu_style, unsafe_allow_html=True)
 
-        #Initializing the Google sheets connection
-        creds = service_account.Credentials.from_service_account_info(
-            st.secrets["gcp_service_account"],
+        #Initializing the Google sheets connection for the data and demographics survey
+        creds1 = service_account.Credentials.from_service_account_info(
+            st.secrets["gcp_service_account1"],
             scopes=[
                 "https://www.googleapis.com/auth/spreadsheets",
             ],
         )
+        self.spreadsheet_id1 = '1XDYHfCOPz7s9etxCGA9p3JBafXsWulkwa90O8OjEtz4'
+        service1 = build('sheets', 'v4', credentials=creds1)
+        self.sheet1 = service1.spreadsheets()
 
-        self.spreadsheet_id = '1XDYHfCOPz7s9etxCGA9p3JBafXsWulkwa90O8OjEtz4'
-        service = build('sheets', 'v4', credentials=creds)
-        self.sheet = service.spreadsheets()
+        # Initializing the Google sheets connection for the health survery
+        creds2 = service_account.Credentials.from_service_account_info(
+            st.secrets["gcp_service_account2"],
+            scopes=[
+                "https://www.googleapis.com/auth/spreadsheets",
+            ],
+        )
+        self.spreadsheet_id2 = '1WFr2iE8cxSBUOmq00rnoNEG84j2jXp1vHxExznZ7VX0'
+        service2 = build('sheets', 'v4', credentials=creds2)
+        self.sheet2 = service2.spreadsheets()
+
+        # Initializing the Google sheets connection for the AI Survey
+        creds3 = service_account.Credentials.from_service_account_info(
+            st.secrets["gcp_service_account3"],
+            scopes=[
+                "https://www.googleapis.com/auth/spreadsheets",
+            ],
+        )
+        self.spreadsheet_id3 = '1kgzVWlDqGQu68xU5cJ6gPvDMHIaV5ZwpAw2WdvGHzgo'
+        service3 = build('sheets', 'v4', credentials=creds3)
+        self.sheet3 = service3.spreadsheets()
 
         #initializes columns and answer variable
         self.col1, self.col2, self.col3 = st.columns((1, 2, 1))
@@ -47,7 +68,7 @@ class Game:
 
         #initializes state variable to keep track of amount of runs game has gone through
         if 'run_num' not in st.session_state:
-            st.session_state.run_num = 0
+            st.session_state.run_num = -1
 
         if 'run_image' not in st.session_state:
             st.session_state.run_image = Image.open("base.png")
@@ -106,6 +127,125 @@ class Game:
         if 'occupation' not in st.session_state:
             st.session_state.occupation = 'Work full-time'
 
+        if 'amputation' not in st.session_state:
+            st.session_state.amputation = 'Never'
+
+        if 'arthritis' not in st.session_state:
+            st.session_state.arthritis = 'Never'
+
+        if 'asthma' not in st.session_state:
+            st.session_state.asthma = 'Never'
+
+        if 'cancer' not in st.session_state:
+            st.session_state.cancer = 'Never'
+
+        if 'palsy' not in st.session_state:
+            st.session_state.palsy = 'Never'
+
+        if 'diabetes' not in st.session_state:
+            st.session_state.diabetes = 'Never'
+
+        if 'epilepsy' not in st.session_state:
+            st.session_state.epilepsy = 'Never'
+
+        if 'hd' not in st.session_state:
+            st.session_state.hd = 'Never'
+
+        if 'hearing' not in st.session_state:
+            st.session_state.hearing = 'Never'
+
+        if 'hypertension' not in st.session_state:
+            st.session_state.hypertension = 'Never'
+
+        if 'ms' not in st.session_state:
+            st.session_state.ms = 'Never'
+
+        if 'mci' not in st.session_state:
+            st.session_state.mci = 'Never'
+
+        if 'dystrophy' not in st.session_state:
+            st.session_state.dystrophy = 'Never'
+
+        if 'polio' not in st.session_state:
+            st.session_state.polio = 'Never'
+
+        if 'bifida' not in st.session_state:
+            st.session_state.bifida = 'Never'
+
+        if 'spinal' not in st.session_state:
+            st.session_state.spinal = 'Never'
+
+        if 'stroke' not in st.session_state:
+            st.session_state.stroke = 'Never'
+
+        if 'tbi' not in st.session_state:
+            st.session_state.tbi = 'Never'
+
+        if 'vision' not in st.session_state:
+            st.session_state.vision = 'Never'
+
+        if 'upper' not in st.session_state:
+            st.session_state.upper = 'Never'
+
+        if 'reliable' not in st.session_state:
+            st.session_state.reliable = '0'
+
+        if 'competent' not in st.session_state:
+            st.session_state.competent = '0'
+
+        if 'ethical' not in st.session_state:
+            st.session_state.ethical = '0'
+
+        if 'transparent' not in st.session_state:
+            st.session_state.transparent = '0'
+
+        if 'benevolent' not in st.session_state:
+            st.session_state.benevolent = '0'
+
+        if 'predictable' not in st.session_state:
+            st.session_state.predictable = '0'
+
+        if 'skilled' not in st.session_state:
+            st.session_state.skilled = '0'
+
+        if 'principled' not in st.session_state:
+            st.session_state.principled = '0'
+
+        if 'genuine' not in st.session_state:
+            st.session_state.genuine = '0'
+
+        if 'kind' not in st.session_state:
+            st.session_state.kind = '0'
+
+        if 'dependable' not in st.session_state:
+            st.session_state.dependable = '0'
+
+        if 'capable' not in st.session_state:
+            st.session_state.capable = '0'
+
+        if 'moral' not in st.session_state:
+            st.session_state.moral = '0'
+
+        if 'sincere' not in st.session_state:
+            st.session_state.sincere = '0'
+
+        if 'considerate' not in st.session_state:
+            st.session_state.considerate = '0'
+
+        if 'consistent' not in st.session_state:
+            st.session_state.consistent = '0'
+
+        if 'meticulous' not in st.session_state:
+            st.session_state.meticulous = '0'
+
+        if 'intergrity' not in st.session_state:
+            st.session_state.integrity = '0'
+
+        if 'candid' not in st.session_state:
+            st.session_state.candid = '0'
+
+        if 'goodwill' not in st.session_state:
+            st.session_state.goodwill = '0'
 
     #prints captcha image
     def Captcha_print(self):
@@ -166,7 +306,7 @@ class Game:
 
         #This is what updates Google sheets
         stuff = [[st.session_state.run_num, st.session_state.the_answer, st.session_state.time_choice, "Robot", "W", st.session_state.money, st.session_state.table_num]]
-        res = self.sheet.values().append(spreadsheetId=self.spreadsheet_id,
+        res = self.sheet1.values().append(spreadsheetId=self.spreadsheet_id1,
                                          range="Sheet1!A:G", valueInputOption="USER_ENTERED",
                                          insertDataOption="INSERT_ROWS", body={"values": stuff}).execute()
         st.session_state.run_num += 1
@@ -195,7 +335,7 @@ class Game:
 
         #This is what updates Google sheets
         stuff = [[st.session_state.run_num, st.session_state.the_answer, st.session_state.time_choice, "Robot", "L", st.session_state.money, st.session_state.table_num]]
-        res = self.sheet.values().append(spreadsheetId=self.spreadsheet_id,
+        res = self.sheet1.values().append(spreadsheetId=self.spreadsheet_id1,
                                          range="Sheet1!A:G", valueInputOption="USER_ENTERED",
                                          insertDataOption="INSERT_ROWS", body={"values": stuff}).execute()
         st.session_state.run_num += 1
@@ -327,7 +467,7 @@ class Game:
             #This is what updates Google Sheets
             stuff = [[st.session_state.run_num, st.session_state.the_answer, st.session_state.time_choice, "Self", "W",
                       st.session_state.money, st.session_state.table_num]]
-            res = self.sheet.values().append(spreadsheetId=self.spreadsheet_id,
+            res = self.sheet1.values().append(spreadsheetId=self.spreadsheet_id1,
                                              range="Sheet1!A:G", valueInputOption="USER_ENTERED",
                                              insertDataOption="INSERT_ROWS", body={"values": stuff}).execute()
 
@@ -343,7 +483,7 @@ class Game:
                 st.session_state.money += -1
             stuff = [[st.session_state.run_num, st.session_state.the_answer, st.session_state.time_choice, "Self", "L",
                       st.session_state.money, st.session_state.table_num]]
-            res = self.sheet.values().append(spreadsheetId=self.spreadsheet_id,
+            res = self.sheet1.values().append(spreadsheetId=self.spreadsheet_id1,
                                              range="Sheet1!A:G", valueInputOption="USER_ENTERED",
                                              insertDataOption="INSERT_ROWS", body={"values": stuff}).execute()
             st.session_state.run_num += 1
@@ -361,6 +501,7 @@ class Game:
         with self.container_captcha.container():
             st.title("Thanks for playing!")
 
+    #This is the demographics survey
     def run_demographics(self):
         st.session_state.run_num += 1
         with self.col2:
@@ -400,6 +541,7 @@ class Game:
                                            ["Work full-time", "Work part-time", "Retired", "Volunteer worker", "Seeking emploment/laid off/etc", "other"], key='occupation')
                 st.form_submit_button("Submit", on_click=self.submit_demo)
 
+    #This submits the demographics information
     def submit_demo(self):
         # This is what updates Google sheets
         stuff = [
@@ -407,22 +549,106 @@ class Game:
              st.session_state.edu, st.session_state.marital, st.session_state.children,
              st.session_state.grndch, st.session_state.living, st.session_state.alone, st.session_state.income,
              st.session_state.occupation]]
-        res = self.sheet.values().append(spreadsheetId=self.spreadsheet_id,
+        res = self.sheet1.values().append(spreadsheetId=self.spreadsheet_id1,
                                          range="Sheet1!J:U", valueInputOption="USER_ENTERED",
                                          insertDataOption="INSERT_ROWS", body={"values": stuff}).execute()
+
+    #This is the health survey
+    def run_health(self):
+        st.session_state.run_num += 1
+        with self.col2:
+            with st.form("health"):
+                st.write("For each of the following conditions please indicate if you have ever had that condition in your life, have the condition now at this time, or never had the condition. ")
+                st.selectbox("Amputation", ("Never", "Now", "In your lifetime"), key="amputation")
+                st.selectbox("Arthritis", ("Never", "Now", "In your lifetime"), key="arthritis")
+                st.selectbox("Asthma or Bronchitis", ("Never", "Now", "In your lifetime"), key="asthma")
+                st.selectbox("Cancer (other than skin cancer)", ("Never", "Now", "In your lifetime"), key="cancer")
+                st.selectbox("Cerebral Palsy", ("Never", "Now", "In your lifetime"), key="palsy")
+                st.selectbox("Diabetes", ("Never", "Now", "In your lifetime"), key="diabetes")
+                st.selectbox("Epilepsy", ("Never", "Now", "In your lifetime"), key="epilepsy")
+                st.selectbox("Heart Disease", ("Never", "Now", "In your lifetime"), key="hd")
+                st.selectbox("Hearing Impairment", ("Never", "Now", "In your lifetime"), key="hearing")
+                st.selectbox("Hypertension", ("Never", "Now", "In your lifetime"), key="hypertension")
+                st.selectbox("Multiple Sclerosis", ("Never", "Now", "In your lifetime"), key="ms")
+                st.selectbox("Mild Cognitive Impairment", ("Never", "Now", "In your lifetime"), key="mci")
+                st.selectbox("Muscular Dystrophy", ("Never", "Now", "In your lifetime"), key="dystrophy")
+                st.selectbox("Post-Polio Syndrome", ("Never", "Now", "In your lifetime"), key="polio")
+                st.selectbox("Spina Bifida", ("Never", "Now", "In your lifetime"), key="bifida")
+                st.selectbox("Spinal Cord Injury", ("Never", "Now", "In your lifetime"), key="spinal")
+                st.selectbox("Stroke", ("Never", "Now", "In your lifetime"), key="stroke")
+                st.selectbox("Traumatic Brain Injury/Closed Head Injury", ("Never", "Now", "In your lifetime"), key="tbi")
+                st.selectbox("Vision Impairment", ("Never", "Now", "In your lifetime"), key="vision")
+                st.selectbox("Upper extremity impairment (e.g., reaching, grasping, holding things, using computer mouse, etc.)", ("Never", "Now", "In your lifetime"), key="upper")
+                st.form_submit_button("Submit", on_click=self.submit_health)
+
+    #This updates the google sheets with the health info
+    def submit_health(self):
+        # This is what updates Google sheets
+        stuff = [
+            [st.session_state.amputation, st.session_state.arthritis, st.session_state.asthma, st.session_state.cancer,
+             st.session_state.palsy, st.session_state.diabetes, st.session_state.epilepsy, st.session_state.hd,
+             st.session_state.hearing, st.session_state.hypertension, st.session_state.ms, st.session_state.mci,
+             st.session_state.dystrophy, st.session_state.polio, st.session_state.bifida, st.session_state.spinal,
+             st.session_state.stroke, st.session_state.tbi, st.session_state.vision, st.session_state.upper]]
+        res = self.sheet2.values().append(spreadsheetId=self.spreadsheet_id2,
+                                         range="Sheet1!A:T", valueInputOption="USER_ENTERED",
+                                         insertDataOption="INSERT_ROWS", body={"values": stuff}).execute()
+
+    #This runs the AI survey at the end of the game
+    def run_end_survey(self):
+        st.session_state.run_num += 1
+        with self.col2:
+            with st.form("AIsurvey"):
+                st.write("Please rate the robot using the scale from 0 (Not at all) to 7 (Very).")
+                st.slider(('Reliable', 0, 7, 0), key="reliable")
+                st.slider(('Competent', 0, 7, 0), key="competent")
+                st.slider(('Ethical', 0, 7, 0), key="ethical")
+                st.slider(('Transparent', 0, 7, 0), key="transparent")
+                st.slider(('Benevolent', 0, 7, 0), key="benevolent")
+                st.slider(('Predictable', 0, 7, 0), key="predictable")
+                st.slider(('Skilled', 0, 7, 0), key="skilled")
+                st.slider(('Principled', 0, 7, 0), key="principled")
+                st.slider(('Genuine', 0, 7, 0), key="genuine")
+                st.slider(('Kind', 0, 7, 0), key="kind")
+                st.slider(('Dependable', 0, 7, 0), key="dependable")
+                st.slider(('Capable', 0, 7, 0), key="capable")
+                st.slider(('Moral', 0, 7, 0), key="moral")
+                st.slider(('Sincere', 0, 7, 0), key="sincere")
+                st.slider(('Considerate', 0, 7, 0), key="considerate")
+                st.slider(('Consistent', 0, 7, 0), key="consistent")
+                st.slider(('Meticulous', 0, 7, 0), key="meticulous")
+                st.slider(('Has integrity', 0, 7, 0), key="integrity")
+                st.slider(('Candid', 0, 7, 0), key="candid")
+                st.slider(('Has goodwill', 0, 7, 0), key="goodwill")
+                st.form_submit_button("Submit", on_click=self.submit_ai)
+
+    def submit_ai(self):
+        stuff = [
+            [st.session_state.table_num, st.session_state.reliable, st.session_state.competent, st.session_state.ethical, st.session_state.transparent,
+             st.session_state.benevolent, st.session_state.predictable, st.session_state.skilled, st.session_state.principled,
+             st.session_state.genuine, st.session_state.kind, st.session_state.dependable, st.session_state.capable,
+             st.session_state.moral, st.session_state.sincere, st.session_state.considerate, st.session_state.consistent,
+             st.session_state.meticulous, st.session_state.integrity, st.session_state.candid, st.session_state.goodwill]]
+        res = self.sheet3.values().append(spreadsheetId=self.spreadsheet_id3,
+                                          range="Sheet1!A:T", valueInputOption="USER_ENTERED",
+                                          insertDataOption="INSERT_ROWS", body={"values": stuff}).execute()
 
     #This function controls which code to run
     def run(self):
         if st.session_state.choice == 1:
             self.run_choice()
         else:
-            if st.session_state.run_num == 0:
+            if st.session_state.run_num == -1:
                 self.run_demographics()
+            elif st.session_state.run_num == 0:
+                self.run_health()
             elif st.session_state.run_num <= 10:
                 if st.session_state.run_num == 1:
                     self.run_one()
                 else:
                     self.run_two()
+            elif st.session_state.run_num == 11:
+                self.run_end_survey()
             else:
                 self.run_end()
 

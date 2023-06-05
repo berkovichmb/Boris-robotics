@@ -188,64 +188,64 @@ class Game:
             st.session_state.upper = 'Never'
 
         if 'reliable' not in st.session_state:
-            st.session_state.reliable = '0'
+            st.session_state.reliable = 0
 
         if 'competent' not in st.session_state:
-            st.session_state.competent = '0'
+            st.session_state.competent = 0
 
         if 'ethical' not in st.session_state:
-            st.session_state.ethical = '0'
+            st.session_state.ethical = 0
 
         if 'transparent' not in st.session_state:
-            st.session_state.transparent = '0'
+            st.session_state.transparent = 0
 
         if 'benevolent' not in st.session_state:
-            st.session_state.benevolent = '0'
+            st.session_state.benevolent = 0
 
         if 'predictable' not in st.session_state:
-            st.session_state.predictable = '0'
+            st.session_state.predictable = 0
 
         if 'skilled' not in st.session_state:
-            st.session_state.skilled = '0'
+            st.session_state.skilled = 0
 
         if 'principled' not in st.session_state:
-            st.session_state.principled = '0'
+            st.session_state.principled = 0
 
         if 'genuine' not in st.session_state:
-            st.session_state.genuine = '0'
+            st.session_state.genuine = 0
 
         if 'kind' not in st.session_state:
-            st.session_state.kind = '0'
+            st.session_state.kind = 0
 
         if 'dependable' not in st.session_state:
-            st.session_state.dependable = '0'
+            st.session_state.dependable = 0
 
         if 'capable' not in st.session_state:
-            st.session_state.capable = '0'
+            st.session_state.capable = 0
 
         if 'moral' not in st.session_state:
-            st.session_state.moral = '0'
+            st.session_state.moral = 0
 
         if 'sincere' not in st.session_state:
-            st.session_state.sincere = '0'
+            st.session_state.sincere = 0
 
         if 'considerate' not in st.session_state:
-            st.session_state.considerate = '0'
+            st.session_state.considerate = 0
 
         if 'consistent' not in st.session_state:
-            st.session_state.consistent = '0'
+            st.session_state.consistent = 0
 
         if 'meticulous' not in st.session_state:
-            st.session_state.meticulous = '0'
+            st.session_state.meticulous = 0
 
-        if 'intergrity' not in st.session_state:
-            st.session_state.integrity = '0'
+        if 'integrity' not in st.session_state:
+            st.session_state.integrity = 0
 
         if 'candid' not in st.session_state:
-            st.session_state.candid = '0'
+            st.session_state.candid = 0
 
         if 'goodwill' not in st.session_state:
-            st.session_state.goodwill = '0'
+            st.session_state.goodwill = 0
 
     #prints captcha image
     def Captcha_print(self):
@@ -264,6 +264,15 @@ class Game:
         self.answer = random_str
         return random_str
 
+    def timer(self, amount):
+        with self.col3:
+            self.container_placeholder.empty()
+        the_amount = str(amount)
+        with self.container_placeholder.container():
+            st.write("Answer quick! you are losing: " + the_amount + " Cents")
+            time.sleep(1)
+        self.container_placeholder.empty()
+
     #Substitutes a letter of the Captcha answer to give wrong answer
     def random_scramble(self):
         r = random.randint(0,7)
@@ -276,6 +285,7 @@ class Game:
     def answer_self(self):
         self.container_robot.empty()
         self.container_captcha.empty()
+        self.container_placeholder.empty()
         self.end = time.time()
         st.session_state.time_choice = self.end-self.start
         st.session_state.choice = 1
@@ -291,17 +301,21 @@ class Game:
         time.sleep(0.01)
         self.container_captcha.empty()
         time.sleep(0.01)
+        self.container_placeholder.empty()
+        time.sleep(0.01)
         with self.container_robot.container():
             st.write("I believe the answer is " + self.answer + ", ill submit it for you.")
             st.image(self.im_robot)
         time.sleep(5)
         self.container_robot.empty()
         time.sleep(0.01)
+        amount = (100 - self.i)/100
+        the_amount = str(amount)
         with self.container_captcha.container():
-            st.title("You got 1$")
+            st.title("You got " + the_amount + "$")
             im_money = Image.open("money.png")
             st.image(im_money)
-        st.session_state.money += 1
+        st.session_state.money += amount
         st.session_state.time_choice = self.end - self.start
 
         #This is what updates Google sheets
@@ -319,6 +333,8 @@ class Game:
         time.sleep(0.01)
         self.container_captcha.empty()
         time.sleep(0.01)
+        self.container_placeholder.empty()
+        time.sleep(0.01)
         with self.container_robot.container():
             st.write("I believe the answer is " + self.random_scramble() + ", ill submit it for you.")
             st.image(self.im_robot)
@@ -329,8 +345,10 @@ class Game:
             st.title("You lost 1$")
             im_wrong = Image.open("wrong.png")
             st.image(im_wrong)
-        if st.session_state.money > 0:
+        if st.session_state.money > 1:
             st.session_state.money += -1
+        else: 
+            st.session_state.money = 0
         st.session_state.time_choice = self.end - self.start
 
         #This is what updates Google sheets
@@ -379,8 +397,13 @@ class Game:
                 st.image(self.im_robot)
             with self.container_captcha.container():
                 st.image(st.session_state.run_image)
-                submitted = st.button("Yes", on_click=self.win)
+                st.button("Yes", on_click=self.win)
                 st.button("Input my own", key="1", on_click=self.answer_self)
+            with self.col3:
+                self.i = 0
+                while self.i < 100:
+                    self.timer(self.i)
+                    self.i += 1
         else:
             rand_answer = self.random_scramble()
             with self.container_robot.container():
@@ -388,8 +411,13 @@ class Game:
                 st.image(self.im_robot)
             with self.container_captcha.container():
                 st.image(st.session_state.run_image)
-                submitted = st.button("Yes", on_click=self.loser)
+                st.button("Yes", on_click=self.loser)
                 st.button("Input my own", key="1", on_click=self.answer_self)
+            with self.col3:
+                self.i = 0
+                while self.i < 100:
+                    self.timer(self.i)
+                    self.i += 1
 
     #Second run
     def run_two(self):
@@ -397,6 +425,8 @@ class Game:
             self.container_robot=st.empty()
         with self.col2:
             self.container_captcha=st.empty()
+        with self.col3:
+            self.container_placeholder=st.empty()
 
         with self.container_robot.container():
             st.write("Lets try this again")
@@ -417,18 +447,18 @@ class Game:
 
         self.container_robot.empty()
         self.container_captcha.empty()
-
-        r = random.randint(1, 2)
         self.start = time.time()
 
+        r = random.randint(1, 2)
         if r == 1:
             with self.container_robot.container():
                 st.write("Do you want me to fill this out for you?")
                 st.image(self.im_robot)
             with self.container_captcha.container():
                 st.image(st.session_state.run_image)
-                submitted = st.button("Yes", on_click=self.win)
+                st.button("Yes", on_click=self.win)
                 st.button("Input my own", key="1", on_click=self.answer_self)
+
         else:
             rand_answer = self.random_scramble()
             with self.container_robot.container():
@@ -436,7 +466,7 @@ class Game:
                 st.image(self.im_robot)
             with self.container_captcha.container():
                 st.image(st.session_state.run_image)
-                submitted = st.button("Yes", on_click=self.loser)
+                st.button("Yes", on_click=self.loser)
                 st.button("Input my own", key="1", on_click=self.answer_self)
 
     #This function is what runs when someone wants to input their owns answer
@@ -471,16 +501,20 @@ class Game:
                                              range="Sheet1!A:G", valueInputOption="USER_ENTERED",
                                              insertDataOption="INSERT_ROWS", body={"values": stuff}).execute()
 
-            st.session_state.run_num += 1
+            the_amount = str(amount)
             with self.container_captcha.container():
-                st.title("You got 1$")
+                st.title("You got " + the_amount1 + "$")
                 im_money = Image.open("money.png")
                 st.image(im_money)
+                st.session_state.money += amount
+                st.session_state.run_num += 1
                 st.button("Play again")
 
         else:
-            if st.session_state.money > 0:
+            if st.session_state.money > 1:
                 st.session_state.money += -1
+            else:
+                st.session_state.money = 0
             stuff = [[st.session_state.run_num, st.session_state.the_answer, st.session_state.time_choice, "Self", "L",
                       st.session_state.money, st.session_state.table_num]]
             res = self.sheet1.values().append(spreadsheetId=self.spreadsheet_id1,
@@ -505,6 +539,8 @@ class Game:
     def run_demographics(self):
         st.session_state.run_num += 1
         with self.col2:
+            self.container_captcha = st.empty()
+        with self.container_captcha.container():
             with st.form("demographics"):
                 self.yes = st.checkbox("I have read and accept the consent form [link](https://share.streamlit.io/mesmith027/streamlit_webapps/main/MC_pi/streamlit_app.py)")
                 self.gender = st.radio(
@@ -557,6 +593,8 @@ class Game:
     def run_health(self):
         st.session_state.run_num += 1
         with self.col2:
+            self.container_captcha = st.empty()
+        with self.container_captcha.container():
             with st.form("health"):
                 st.write("For each of the following conditions please indicate if you have ever had that condition in your life, have the condition now at this time, or never had the condition. ")
                 st.selectbox("Amputation", ("Never", "Now", "In your lifetime"), key="amputation")
@@ -585,7 +623,7 @@ class Game:
     def submit_health(self):
         # This is what updates Google sheets
         stuff = [
-            [st.session_state.amputation, st.session_state.arthritis, st.session_state.asthma, st.session_state.cancer,
+            [st.session_state.table_num, st.session_state.amputation, st.session_state.arthritis, st.session_state.asthma, st.session_state.cancer,
              st.session_state.palsy, st.session_state.diabetes, st.session_state.epilepsy, st.session_state.hd,
              st.session_state.hearing, st.session_state.hypertension, st.session_state.ms, st.session_state.mci,
              st.session_state.dystrophy, st.session_state.polio, st.session_state.bifida, st.session_state.spinal,
@@ -600,26 +638,26 @@ class Game:
         with self.col2:
             with st.form("AIsurvey"):
                 st.write("Please rate the robot using the scale from 0 (Not at all) to 7 (Very).")
-                st.slider(('Reliable', 0, 7, 0), key="reliable")
-                st.slider(('Competent', 0, 7, 0), key="competent")
-                st.slider(('Ethical', 0, 7, 0), key="ethical")
-                st.slider(('Transparent', 0, 7, 0), key="transparent")
-                st.slider(('Benevolent', 0, 7, 0), key="benevolent")
-                st.slider(('Predictable', 0, 7, 0), key="predictable")
-                st.slider(('Skilled', 0, 7, 0), key="skilled")
-                st.slider(('Principled', 0, 7, 0), key="principled")
-                st.slider(('Genuine', 0, 7, 0), key="genuine")
-                st.slider(('Kind', 0, 7, 0), key="kind")
-                st.slider(('Dependable', 0, 7, 0), key="dependable")
-                st.slider(('Capable', 0, 7, 0), key="capable")
-                st.slider(('Moral', 0, 7, 0), key="moral")
-                st.slider(('Sincere', 0, 7, 0), key="sincere")
-                st.slider(('Considerate', 0, 7, 0), key="considerate")
-                st.slider(('Consistent', 0, 7, 0), key="consistent")
-                st.slider(('Meticulous', 0, 7, 0), key="meticulous")
-                st.slider(('Has integrity', 0, 7, 0), key="integrity")
-                st.slider(('Candid', 0, 7, 0), key="candid")
-                st.slider(('Has goodwill', 0, 7, 0), key="goodwill")
+                st.slider('Reliable', 0, 7, 0, key="reliable")
+                st.slider('Competent', 0, 7, 0, key="competent")
+                st.slider('Ethical', 0, 7, 0, key="ethical")
+                st.slider('Transparent', 0, 7, 0, key="transparent")
+                st.slider('Benevolent', 0, 7, 0, key="benevolent")
+                st.slider('Predictable', 0, 7, 0, key="predictable")
+                st.slider('Skilled', 0, 7, 0, key="skilled")
+                st.slider('Principled', 0, 7, 0, key="principled")
+                st.slider('Genuine', 0, 7, 0, key="genuine")
+                st.slider('Kind', 0, 7, 0, key="kind")
+                st.slider('Dependable', 0, 7, 0, key="dependable")
+                st.slider('Capable', 0, 7, 0, key="capable")
+                st.slider('Moral', 0, 7, 0, key="moral")
+                st.slider('Sincere', 0, 7, 0, key="sincere")
+                st.slider('Considerate', 0, 7, 0, key="considerate")
+                st.slider('Consistent', 0, 7, 0, key="consistent")
+                st.slider('Meticulous', 0, 7, 0, key="meticulous")
+                st.slider('Has integrity', 0, 7, 0, key="integrity")
+                st.slider('Candid', 0, 7, 0, key="candid")
+                st.slider('Has goodwill', 0, 7, 0, key="goodwill")
                 st.form_submit_button("Submit", on_click=self.submit_ai)
 
     def submit_ai(self):

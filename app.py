@@ -55,7 +55,8 @@ class Game:
         #initializes columns and answer variable
         self.col1, self.col2, self.col3 = st.columns((1, 2, 1))
         self.the_answers = ["DGRIUIQ2", "OPU29NKD", "5DS3MGQQ", "8IJM53T0", "8KAQHUCD", "8P27BAHM", "9TF3T0P4", "B4OTX1M1", "0JMCNGFR", "FIBLXDQT"]
-        self.im_robot = Image.open("qtrobot.jpeg")
+        self.im_robot = Image.open("qtrobot.png")
+        self.im_robot_heart = Image.open("qtrobot_heart.png")
 
 
         #imports CSS file for cuztomization
@@ -230,7 +231,7 @@ class Game:
         time.sleep(0.01)
         with self.container_robot.container():
             st.write("I believe the answer is " + robot_answer + ", ill submit it for you.")
-            st.image(self.im_robot)
+            st.image(self.im_robot_heart)
         time.sleep(5)
         self.container_robot.empty()
         time.sleep(0.01)

@@ -3,3 +3,4 @@ streamlit
 captcha
 google-auth-oauthlib
 google-api-python-client
+streamlit_autorefresh

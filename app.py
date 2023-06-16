@@ -74,6 +74,9 @@ class Game:
         if 'run_num' not in st.session_state:
             st.session_state.run_num = -3
 
+        if 'out_of_time' not in st.session_state:
+            st.session_state.out_of_time = 0
+
         if 'run_image' not in st.session_state:
             st.session_state.run_image = Image.open("base.png")
 
@@ -229,44 +232,60 @@ class Game:
         time.sleep(0.01)
         self.container_placeholder.empty()
         time.sleep(0.01)
-        with self.container_robot.container():
-            st.write("I believe the answer is " + robot_answer + ", ill submit it for you.")
-            st.image(self.im_robot_heart)
-        time.sleep(5)
-        self.container_robot.empty()
-        time.sleep(0.01)
-        the_amount = str(st.session_state.x / 100)
-        if robot_answer == self.the_answers[st.session_state.run_num-1]:
-            with self.container_captcha.container():
-                st.title("You got $" + the_amount)
-                im_money = Image.open("money.png")
-                st.image(im_money)
-            st.session_state.money += st.session_state.x/100
-            st.session_state.time_choice = self.end - st.session_state.start_time
-            #This is what updates Google sheets
-            stuff = [[st.session_state.run_num, self.the_answers[st.session_state.run_num - 1], st.session_state.time_choice, "Robot", "W", st.session_state.money, st.session_state.table_num]]
+        if st.session_state.out_of_time == 1:
+            st.session_state.out_of_time = 0
+            stuff = [
+                [st.session_state.run_num, self.the_answers[st.session_state.run_num - 1], 100,
+                "Out of time", "L",
+                st.session_state.money, st.session_state.table_num]]
             res = self.sheet1.values().append(spreadsheetId=self.spreadsheet_id1,
-                                         range="Sheet1!A:G", valueInputOption="USER_ENTERED",
-                                         insertDataOption="INSERT_ROWS", body={"values": stuff}).execute()
+                                          range="Sheet1!A:G", valueInputOption="USER_ENTERED",
+                                          insertDataOption="INSERT_ROWS", body={"values": stuff}).execute()
             st.session_state.run_num += 1
-            time.sleep(5)
-            self.container_captcha.empty()
-        elif robot_answer != self.the_answers[st.session_state.run_num-1]:
             with self.container_captcha.container():
                 st.title("You got no money!")
                 im_wrong = Image.open("wrong.png")
                 st.image(im_wrong)
-            st.session_state.time_choice = self.end - st.session_state.start_time
-            # This is what updates Google sheets
-            stuff = [[st.session_state.run_num, self.the_answers[st.session_state.run_num - 1], st.session_state.time_choice, "Robot", "L",
-                      st.session_state.money, st.session_state.table_num]]
-            res = self.sheet1.values().append(spreadsheetId=self.spreadsheet_id1,
+                time.sleep(5)
+            self.container_captcha.empty()
+        else:
+            with self.container_robot.container():
+                st.write("I believe the answer is " + robot_answer + ", ill submit it for you.")
+                st.image(self.im_robot_heart)
+            time.sleep(5)
+            self.container_robot.empty()
+            time.sleep(0.01)
+            the_amount = str(st.session_state.x / 100)
+            if robot_answer == self.the_answers[st.session_state.run_num-1]:
+                with self.container_captcha.container():
+                    st.title("You got $" + the_amount)
+                    im_money = Image.open("money.png")
+                    st.image(im_money)
+                st.session_state.money += st.session_state.x/100
+                st.session_state.time_choice = self.end - st.session_state.start_time
+                #This is what updates Google sheets
+                stuff = [[st.session_state.run_num, self.the_answers[st.session_state.run_num - 1], st.session_state.time_choice, "Robot", "W", st.session_state.money, st.session_state.table_num]]
+                res = self.sheet1.values().append(spreadsheetId=self.spreadsheet_id1,
+                                         range="Sheet1!A:G", valueInputOption="USER_ENTERED",
+                                         insertDataOption="INSERT_ROWS", body={"values": stuff}).execute()
+                st.session_state.run_num += 1
+                time.sleep(5)
+                self.container_captcha.empty()
+            elif robot_answer != self.the_answers[st.session_state.run_num-1]:
+                with self.container_captcha.container():
+                    st.title("You got no money!")
+                    im_wrong = Image.open("wrong.png")
+                    st.image(im_wrong)
+                st.session_state.time_choice = self.end - st.session_state.start_time
+                # This is what updates Google sheets
+                stuff = [[st.session_state.run_num, self.the_answers[st.session_state.run_num - 1], st.session_state.time_choice, "Robot", "L",
+                        st.session_state.money, st.session_state.table_num]]
+                res = self.sheet1.values().append(spreadsheetId=self.spreadsheet_id1,
                                               range="Sheet1!A:G", valueInputOption="USER_ENTERED",
                                               insertDataOption="INSERT_ROWS", body={"values": stuff}).execute()
-            st.session_state.run_num += 1
-            time.sleep(5)
-            self.container_captcha.empty()
-            st.button("Play again")
+                st.session_state.run_num += 1
+                time.sleep(5)
+                self.container_captcha.empty()
 
     #This runs the game
     def run_game(self):
@@ -285,13 +304,6 @@ class Game:
         time.sleep(5)
         self.container_robot.empty()
         time.sleep(0.01)
-        with self.container_robot.container():
-            st.image(self.im_robot)
-        with self.container_captcha.container():
-            st.image(captcha_im)
-        time.sleep(5)
-        self.container_robot.empty()
-        self.container_captcha.empty()
         st.session_state.start_time = time.time()
         with self.container_robot.container():
             st.write("Do you want me to solve this for you?")
@@ -317,13 +329,16 @@ class Game:
                 time.sleep(1)
             self.container_captcha.empty()
             self.container_placeholder.empty()
+        self.container_robot.empty()
+        time.sleep(0.01)
+        self.container_placeholder.empty()
+        time.sleep(0.01)
+        self.container_captcha.empty()
+        time.sleep(0.01)
+        st.session_state.out_of_time = 1
         with self.container_captcha.container():
-            st.image(captcha_im)
-            st.button("Yes", key=w, on_click=self.win_lose_robot)
-            st.button("Input my own", key=d, on_click=self.answer_self)
-        with self.container_placeholder.container():
-            st.write("You ran out of time, you will get no money for this round")
-
+            st.write("You ran out of time")
+            st.button("Acknowledge", on_click=self.win_lose_robot)
 
     #Second run
     def run_intro(self):
@@ -447,16 +462,17 @@ class Game:
             self.container_placeholder = st.empty()
 
         with self.container_captcha.container():
-            st.markdown("-You will be shown a series of CAPTCHAs like the example on the right.")
-            st.markdown("-As soon as the CAPTCHA is displayed you will have one chance to solve it in 100 seconds.")
-            st.markdown("-If you correctly solve the CAPTCHA you will receive a maximum $1 reward.")
-            st.markdown(
-                "-The longer you take the less money you will receive. The timer and reward counter are displayed on the right.")
-            st.markdown("-If you solve it incorrectly you will get no reward.")
-            st.markdown("-You will solve a total of ten CAPTCHAS in this game.")
+            st.markdown("-You will be shown a series of CAPTCHAs like the example on the right.  \n"
+                        "-As soon as the CAPTCHA is displayed you will have one chance to solve it in 100 seconds.  \n"
+                        "-If you correctly solve the CAPTCHA you will receive a maximum $1 reward.  \n"
+                        "-The longer you take the less money you will receive. The timer and reward counter are displayed on the right.  \n"
+                        "-If you solve it incorrectly you will get no reward.  \n"
+                        "-You will solve a total of ten CAPTCHAS in this game.\n")
             submitted = st.button("I Understand")
         with self.container_placeholder.container():
+            timer_image = Image.open("timer.png")
             st.image(st.session_state.run_image)
+            st.image(timer_image)
         if submitted:
             self.clear_instructions()
 
@@ -523,6 +539,14 @@ class Game:
 
     #This runs the AI survey at the end of the game
     def run_end_survey(self):
+        if st.session_state.run_num == 11:
+            with self.col2:
+                self.container_captcha = st.empty()
+            with self.container_captcha.container():
+                total_money = str(st.session_state.money)
+                st.title("You earned a total of $" + total_money)
+                time.sleep(5)
+            self.container_captcha.empty()
         st.session_state.run_num += 1
         with self.col2:
             with st.form("AIsurvey"):

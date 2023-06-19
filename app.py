@@ -358,7 +358,7 @@ class Game:
         self.container_robot.empty()
 
         with self.container_robot.container():
-            st.write("I am here to help you solve some tricky Captchas              ")
+            st.write("I am here to help you solve some tricky CAPTCHAs              ")
             st.image(self.im_robot)
 
         time.sleep(5)

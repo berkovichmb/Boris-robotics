@@ -543,8 +543,7 @@ class Game:
             with self.col2:
                 self.container_captcha = st.empty()
             with self.container_captcha.container():
-                total_money = str(st.session_state.money)
-                st.title("You earned a total of $" + total_money)
+                st.title("You earned a total of $%.2f" % st.session_state.money)
                 time.sleep(5)
             self.container_captcha.empty()
         st.session_state.run_num += 1

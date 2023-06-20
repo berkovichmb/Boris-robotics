@@ -604,47 +604,47 @@ class Game:
                 st.form_submit_button("Submit", on_click=self.submit_ai)
 
         # This runs the AI survey at the end of the game
-        def run_end_survey2(self):
-            with self.col1:
-                self.container_robot = st.empty()
-            if st.session_state.run_num == 11:
-                with self.col2:
-                    self.container_captcha = st.empty()
-                with self.container_captcha.container():
-                    st.title("You earned a total of $%.2f" % st.session_state.money)
-                    time.sleep(5)
-                self.container_captcha.empty()
-            with self.col1:
-                with self.container_robot.container():
-                    st.image(self.im_robot)
-            st.session_state.run_num += 1
+    def run_end_survey2(self):
+        with self.col1:
+            self.container_robot = st.empty()
+        if st.session_state.run_num == 11:
             with self.col2:
                 self.container_captcha = st.empty()
-            with self.container_captcha:
-                with st.form("AIsurvey"):
-                    st.write("Please rate the robot using the scale from 0 (Not at all) to 7 (Very). Use (Does not apply) if you think it does not apply.")
-                    st.radio('Reliable', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'], key="reliable")
-                    st.radio('Competent', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'],key="competent")
-                    st.radio('Ethical', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'], key="ethical")
-                    st.radio('Transparent', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'],key="transparent")
-                    st.radio('Benevolent', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'],key="benevolent")
-                    st.radio('Predictable', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'],key="predictable")
-                    st.radio('Skilled', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'], key="skilled")
-                    st.radio('Principled', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'],key="principled")
-                    st.radio('Genuine', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'], key="genuine")
-                    st.radio('Kind', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'], key="kind")
-                    st.radio('Dependable', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'],key="dependable")
-                    st.radio('Capable', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'], key="capable")
-                    st.radio('Select 7', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'], key="check")
-                    st.radio('Moral', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'], key="moral")
-                    st.radio('Sincere', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'], key="sincere")
-                    st.radio('Considerate', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'],key="considerate")
-                    st.radio('Consistent', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'],key="consistent")
-                    st.radio('Meticulous', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'],key="meticulous")
-                    st.radio('Has integrity', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'],key="integrity")
-                    st.radio('Candid', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'], key="candid")
-                    st.radio('Has goodwill', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'],key="goodwill")
-                    st.form_submit_button("Submit", on_click=self.submit_ai)
+            with self.container_captcha.container():
+                st.title("You earned a total of $%.2f" % st.session_state.money)
+                time.sleep(5)
+            self.container_captcha.empty()
+        with self.col1:
+            with self.container_robot.container():
+                st.image(self.im_robot)
+        st.session_state.run_num += 1
+        with self.col2:
+            self.container_captcha = st.empty()
+        with self.container_captcha:
+            with st.form("AIsurvey"):
+                st.write("Please rate the robot using the scale from 0 (Not at all) to 7 (Very). Use (Does not apply) if you think it does not apply.")
+                st.radio('Reliable', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'], key="reliable")
+                st.radio('Competent', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'],key="competent")
+                st.radio('Ethical', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'], key="ethical")
+                st.radio('Transparent', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'],key="transparent")
+                st.radio('Benevolent', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'],key="benevolent")
+                st.radio('Predictable', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'],key="predictable")
+                st.radio('Skilled', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'], key="skilled")
+                st.radio('Principled', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'],key="principled")
+                st.radio('Genuine', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'], key="genuine")
+                st.radio('Kind', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'], key="kind")
+                st.radio('Dependable', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'],key="dependable")
+                st.radio('Capable', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'], key="capable")
+                st.radio('Select 7', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'], key="check")
+                st.radio('Moral', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'], key="moral")
+                st.radio('Sincere', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'], key="sincere")
+                st.radio('Considerate', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'],key="considerate")
+                st.radio('Consistent', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'],key="consistent")
+                st.radio('Meticulous', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'],key="meticulous")
+                st.radio('Has integrity', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'],key="integrity")
+                st.radio('Candid', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'], key="candid")
+                st.radio('Has goodwill', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'],key="goodwill")
+                st.form_submit_button("Submit", on_click=self.submit_ai)
 
     def submit_ai(self):
         self.container_captcha.empty()

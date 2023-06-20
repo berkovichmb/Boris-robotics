@@ -350,18 +350,10 @@ class Game:
         with self.col3:
             self.container_placeholder=st.empty()
         with self.container_robot.container():
-            st.write("Hello, I am QTRobot")
+            st.write("Hello, I am QTRobot. I am here to help you get cash rewards for correctly completing CAPTCHAs. I can fill in the CAPTCHA automatically which takes less time than typing it in.")
             st.image(self.im_robot)
 
-        time.sleep(5)
-
-        self.container_robot.empty()
-
-        with self.container_robot.container():
-            st.write("I am here to help you solve some tricky CAPTCHAs              ")
-            st.image(self.im_robot)
-
-        time.sleep(5)
+        time.sleep(15)
 
         self.container_robot.empty()
 

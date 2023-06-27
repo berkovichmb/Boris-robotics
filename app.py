@@ -49,7 +49,7 @@ class Game:
 
         # initializes state variable to keep track of amount of runs game has gone through
         if 'run_num' not in st.session_state:
-            st.session_state.run_num = 0
+            st.session_state.run_num = 1
 
         if 'to_continue' not in st.session_state:
             st.session_state.to_continue = 0

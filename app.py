@@ -399,7 +399,7 @@ class Game:
         time.sleep(0.01)
         self.container_placeholder.empty()
         time.sleep(0.01)
-        )
+    
 
     # This runs the consent form just prior to the demographics form
     def run_consent(self):

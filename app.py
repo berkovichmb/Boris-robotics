@@ -42,6 +42,7 @@ class Game:
                 div.stButton{
                 display:block;
                 margin:auto;
+                }
                 </style>""", unsafe_allow_html=True)
 
         self.col1, self.col2, self.col3 = st.columns((1, 2, 1))
@@ -49,7 +50,7 @@ class Game:
         # initializes state variable to keep track of amount of runs game has gone through
         if 'run_num' not in st.session_state:
             st.session_state.run_num = -1
-            
+
         if 'to_continue' not in st.session_state:
             st.session_state.to_continue = 0
 
@@ -398,6 +399,9 @@ class Game:
         time.sleep(0.01)
         self.container_placeholder.empty()
         time.sleep(0.01)
+        self.container_robot.empty(
+        time.sleep(0.01)
+        )
 
     # This runs the consent form just prior to the demographics form
     def run_consent(self):

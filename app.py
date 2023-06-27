@@ -37,13 +37,6 @@ class Game:
         # imports CSS file for cuztomization
         with open('style.css') as f:
             st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
-            # customizes button css
-            m = st.markdown("""<style>
-                div.stButton{
-                display:block;
-                margin:auto;
-                }
-                </style>""", unsafe_allow_html=True)
 
         self.col1, self.col2, self.col3 = st.columns((1, 2, 1))
 

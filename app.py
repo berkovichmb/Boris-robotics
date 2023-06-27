@@ -278,9 +278,10 @@ class Game:
                 "Hello, I am QTRobot. I am here to help you get cash rewards for correctly completing CAPTCHAs. I can fill in the CAPTCHA automatically which takes less time than typing it in.")
             st.image(self.im_robot)
             time.sleep(5)
-            st.button("Start the game", on_click=self.clear_intro)
+            st.button("Start the game", on_click=self.clear)
 
     def clear_intro(self):
+        time.sleep(1)
         self.container_captcha.empty()
         
 

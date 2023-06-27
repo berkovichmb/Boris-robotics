@@ -281,6 +281,8 @@ class Game:
             st.button("Start the game", on_click=self.clear_intro)
 
     def clear_intro(self):
+        with self.col2: 
+            self.container_captcha = st.empty()
         self.container_captcha.empty()
         time.sleep(0.01)
         

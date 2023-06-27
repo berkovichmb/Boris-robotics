@@ -12,8 +12,6 @@ class Game:
         self.im_robot = self.initialize_image_robot()
         self.im_robot_heart = self.initialize_image_robot_heart()
         self.the_answers = self.initialize_answers_array()
-        self.im_money = self.initialize_image_money()
-        self.im_wrong = self.initialize_image_wrong()
 
         # This hides the menu drop down
         hide_menu_style = """
@@ -27,10 +25,8 @@ class Game:
         creds1 = service_account.Credentials.from_service_account_info(
             st.secrets["gcp_service_account1"],
             scopes=[
-                "https://www.googleapis.com/auth/spreadsheets",
-            ],
-        )
-        self.spreadsheet_id1 = '1XDYHfCOPz7s9etxCGA9p3JBafXsWulkwa90O8OjEtz4'
+Expand All
+	@@ -27,29 +32,21 @@ def __init__(self):
         service1 = build('sheets', 'v4', credentials=creds1)
         self.sheet1 = service1.spreadsheets()
 
@@ -42,40 +38,19 @@ class Game:
                 div.stButton{
                 display:block;
                 margin:auto;
-                }
                 </style>""", unsafe_allow_html=True)
 
         self.col1, self.col2, self.col3 = st.columns((1, 2, 1))
 
         # initializes state variable to keep track of amount of runs game has gone through
         if 'run_num' not in st.session_state:
-            st.session_state.run_num = -1
+            st.session_state.run_num = 0
 
         if 'to_continue' not in st.session_state:
             st.session_state.to_continue = 0
-
-        if 'out_of_time' not in st.session_state:
-            st.session_state.out_of_time = 0
-
-        if 'run_image' not in st.session_state:
-            st.session_state.run_image = Image.open("base.png")
-
-        if 'choice' not in st.session_state:
-            st.session_state.choice = 0
-
-        if 'the_answer' not in st.session_state:
-            st.session_state.the_answer = "blank"
-
-        if 'user_answer' not in st.session_state:
-            st.session_state.user_answer = ''
-
-        if 'text_input' not in st.session_state:
-            st.session_state.text_input = "blank"
-
-        if 'money' not in st.session_state:
-            st.session_state.money = 0
-
-        if 'time_choice' not in st.session_state:
+Expand Down
+Expand Up
+	@@ -79,7 +76,7 @@ def __init__(self):
             st.session_state.time_choice = 0
 
         if 'table_num' not in st.session_state:
@@ -83,31 +58,22 @@ class Game:
 
         if 'timer_num' not in st.session_state:
             st.session_state.time_num = 0
-
-        if 'x' not in st.session_state:
-            st.session_state.x = 100
+Expand All
+	@@ -89,21 +86,39 @@ def __init__(self):
 
         if 'start_time' not in st.session_state:
             st.session_state.start_time = 0
     @st.cache_data
     def initialize_image_robot(_self):
+        # initializes columns and answer variable
         im_robot = Image.open("qtrobot.png")
         return im_robot
 
     @st.cache_data
     def initialize_image_robot_heart(_self):
+        # initializes columns and answer variable
         im_robot = Image.open("qtrobot_heart.png")
         return im_robot
-
-    @st.cache_data
-    def initialize_image_money(_self):
-        im_money = Image.open("money.png")
-        return im_money
-
-    @st.cache_data
-    def initialize_image_wrong(_self):
-        im_wrong = Image.open("wrong.png")
-        return im_wrong
 
     @st.cache_data
     def initialize_answers_array(_self):
@@ -133,13 +99,8 @@ class Game:
     def win_lose_robot(self):
         robot_answer = str(self.the_answers[st.session_state.run_num - 1])
         self.end = time.time()
-        self.container_robot.empty()
-        time.sleep(0.01)
-        self.container_captcha.empty()
-        time.sleep(0.01)
-        self.container_placeholder.empty()
-        time.sleep(0.01)
-        if st.session_state.out_of_time == 1:
+Expand All
+	@@ -117,11 +132,11 @@ def win_lose_robot(self):
             st.session_state.out_of_time = 0
             stuff = [
                 [st.session_state.run_num, self.the_answers[st.session_state.run_num - 1], 100,
@@ -151,18 +112,8 @@ class Game:
             st.session_state.run_num += 1
             i = 0
             e = 8
-            while i < 1:
-                with self.container_captcha.container():
-                    st.title("You got no money!")
-                    st.image(self.im_wrong)
-                    st.button("Play again", key=e, on_click=self.clear)
-                    e += 1
-                    time.sleep(1)
-        else:
-            with self.container_robot.container():
-                st.write("I believe the answer is " + robot_answer + ", ill submit it for you.")
-                st.image(self.im_robot_heart)
-            time.sleep(5)
+Expand All
+	@@ -141,14 +156,16 @@ def win_lose_robot(self):
             self.container_robot.empty()
             time.sleep(0.01)
             the_amount = str(st.session_state.x / 100)
@@ -179,12 +130,8 @@ class Game:
                 st.session_state.run_num += 1
                 i = 0
                 e = 8
-                while i < 1:
-                    with self.container_captcha.container():
-                        st.title("You got $" + the_amount)
-                        st.image(self.im_money)
-                        st.button("Play again", key=e, on_click=self.clear)
-                        time.sleep(1)
+Expand All
+	@@ -162,14 +179,15 @@ def win_lose_robot(self):
                         e += 1
 
                 self.container_captcha.empty()
@@ -200,14 +147,8 @@ class Game:
                 st.session_state.run_num += 1
                 i = 0
                 e = 8
-                while i < 1:
-                    with self.container_captcha.container():
-                        st.title("You got no money!")
-                        st.image(self.im_wrong)
-                        st.button("Play again", key=e, on_click=self.clear)
-                        time.sleep(1)
-                        e += 1
-
+Expand All
+	@@ -185,26 +203,26 @@ def win_lose_robot(self):
     def run_continue(self):
         st.session_state.to_continue = 0
         with self.col1:
@@ -234,54 +175,27 @@ class Game:
         st.session_state.start_time = time.time()
         with self.container_robot.container():
             st.write("Do you want me to solve this for you?")
-            st.image(self.im_robot)
-        st.session_state.x = 100
-        st.session_state.timer_num = 1
-        w = 5000
-        d = 4000
-        while st.session_state.x > -1:
-            with self.container_captcha.container():
-                st.image(captcha_im)
-                st.button("Yes", key=d, on_click=self.win_lose_robot)
-                st.button("Input my own", key=w, on_click=self.answer_self)
-                w += 1
-                d += 1
-            with self.container_placeholder.container():
-                y = str(st.session_state.timer_num)
-                st.write("Time to answer: " + y)
-                st.session_state.x += -1
-                in_dollar = st.session_state.x / 100
-                f = str(in_dollar)
-                st.write("Money left for this CAPTCHA: $" + f)
-                st.session_state.timer_num += 1
-                time.sleep(1)
-            self.container_captcha.empty()
-            self.container_placeholder.empty()
-        self.container_robot.empty()
-        time.sleep(0.01)
-        self.container_placeholder.empty()
-        time.sleep(0.01)
-        self.container_captcha.empty()
-        time.sleep(0.01)
-        st.session_state.out_of_time = 1
-        with self.container_captcha.container():
+Expand Down
+Expand Up
+	@@ -242,32 +260,33 @@ def run_game(self):
             st.write("You ran out of time")
             st.button("Acknowledge", on_click=self.win_lose_robot)
 
     # Second run
     def run_intro(self):
         st.session_state.run_num += 1
+        with self.col1:
+            self.container_robot = st.empty()
         with self.col2:
             self.container_captcha = st.empty()
+        with self.col3:
+            self.container_placeholder = st.empty()
         with self.container_captcha.container():
             st.write(
                 "Hello, I am QTRobot. I am here to help you get cash rewards for correctly completing CAPTCHAs. I can fill in the CAPTCHA automatically which takes less time than typing it in.")
             st.image(self.im_robot)
             time.sleep(5)
-            if st.button("Start the game"):
-                self.container_captcha.empty()
-                
-        
+            st.button("Start the game", on_click=self.clear)
 
     # This function is what runs when someone wants to input their owns answer
     def run_choice(self):
@@ -297,26 +211,8 @@ class Game:
         with self.container_robot.container():
             st.write("Ok, you must've seen something that i did not.")
             st.image(self.im_robot)
-        a = 0
-        with self.container_captcha.container():
-            st.image(captcha_im)
-            while st.session_state.x > -1:
-                if a == 0:
-                    with st.form('the_form'):
-                        st.text_input(label='Type your answer (CAPS)', key='user_answer')
-                        form_submit = st.form_submit_button("Submit")
-                    a += 1
-                if form_submit:
-                    break
-                with self.container_placeholder.container():
-                    y = str(st.session_state.timer_num)
-                    st.write("Time to answer: " + y)
-                    st.session_state.x += -1
-                    in_dollar = st.session_state.x / 100
-                    f = str(in_dollar)
-                    st.write("Money left for this CAPTCHA: $" + f)
-                    st.session_state.timer_num += 1
-                    time.sleep(1)
+Expand All
+	@@ -294,7 +313,7 @@ def run_choice(self):
                     self.container_placeholder.empty()
             self.win_lose()
 
@@ -324,10 +220,8 @@ class Game:
     def win_lose(self):
         with self.col3:
             self.container_placeholder = st.empty()
-        with self.container_placeholder.container():
-            self.container_placeholder.empty()
-        self.container_robot.empty()
-        time.sleep(0.01)
+Expand All
+	@@ -305,43 +324,45 @@ def win_lose(self):
         self.container_captcha.empty()
         time.sleep(0.01)
         st.session_state.choice = 0
@@ -344,7 +238,8 @@ class Game:
             the_amount = str(st.session_state.x / 100)
             with self.container_captcha.container():
                 st.title("You got $" + the_amount)
-                st.image(self.im_money)
+                im_money = Image.open("money.png")
+                st.image(im_money)
                 st.session_state.run_num += 1
         else:
             stuff = [
@@ -357,8 +252,9 @@ class Game:
             st.session_state.run_num += 1
             with self.container_captcha.container():
                 st.title("You got no money!")
-                st.image(self.im_wrong)
-        st.button("Play again")
+                im_wrong = Image.open("wrong.png")
+                st.image(im_wrong)
+        st.button("Play again", on_click=self.clear)
 
     # This function ends the game
     def run_end(self):
@@ -370,35 +266,25 @@ class Game:
     # This is what runs the instructions page
     def run_instructions(self):
         st.session_state.run_num += 1
-        with self.col2:
-            self.container_captcha = st.empty()
-        with self.col3:
-            self.container_placeholder = st.empty()
+        with self.col1:
+Expand All
+	@@ -366,14 +387,14 @@ def run_instructions(self):
+        if submitted:
+            self.clear_instructions()
 
-        with self.container_captcha.container():
-            st.markdown("-You will be shown a series of CAPTCHAs like the example on the right.  \n"
-                        "-As soon as the CAPTCHA is displayed you will have one chance to solve it in 100 seconds.  \n"
-                        "-If you correctly solve the CAPTCHA you will receive a maximum $1 reward.  \n"
-                        "-The longer you take the less money you will receive. The timer and reward counter are displayed on the right.  \n"
-                        "-If you solve it incorrectly you will get no reward.  \n"
-                        "-You will solve a total of ten CAPTCHAS in this game.\n")
-            st.button("I Understand", on_click=self.clear)
-        with self.container_placeholder.container():
-            timer_image = Image.open("timer.png")
-            st.image(st.session_state.run_image)
-            st.image(timer_image)
-
+    # This clears the isntructions page
     def clear_instructions(self):
         self.container_captcha.empty()
+        time.sleep(0.01)
+        self.container_placeholder.empty()
         time.sleep(0.01)
 
     # This runs the consent form just prior to the demographics form
     def run_consent(self):
         st.session_state.run_num += 1
         self.col1, self.col2, self.col3 = st.columns((1, 6, 1))
-        with self.col2:
-            self.container_captcha = st.empty()
-        with self.container_captcha.container():
+Expand All
+	@@ -383,7 +404,8 @@ def run_consent(self):
             uml_logo = Image.open("uml.png")
             st.image(uml_logo)
             st.markdown("Consent for Research Participation  \nIRB #: sdgfasdf  \nIRB Approval Date: fdgdfgds")
@@ -407,13 +293,8 @@ class Game:
             st.button("I agree", on_click=self.clear)
 
     def run_demographics(self):
-        st.session_state.run_num += 1
-        with self.col3:
-            self.container_placeholder = st.empty()
-        with self.container_placeholder.container():
-            user_num = str(st.session_state.table_num)
-            st.write("Your unique user number is: " + user_num)
-        with self.col2:
+Expand All
+	@@ -397,7 +419,8 @@ def run_demographics(self):
             self.container_captcha = st.empty()
         with self.container_captcha:
             with st.form("Demographics"):
@@ -422,18 +303,8 @@ class Game:
                 st.form_submit_button("I have completed the demographics survey", on_click=self.clear)
 
     def run_end_survey1(self):
-        st.session_state.to_continue = 1
-        st.session_state.run_num += 1
-        with self.col1:
-            self.container_robot = st.empty()
-        with self.container_robot.container():
-            st.image(self.im_robot)
-        with self.col3:
-            self.container_placeholder = st.empty()
-        with self.container_placeholder.container():
-            user_num = str(st.session_state.table_num)
-            st.write("Your unique user number is: " + user_num)
-        with self.col2:
+Expand All
+	@@ -416,7 +439,8 @@ def run_end_survey1(self):
             self.container_captcha = st.empty()
         with self.container_captcha.container():
             with st.form("aisurvey1"):
@@ -442,17 +313,8 @@ class Game:
                 st.form_submit_button("I have completed the Robot MDMT survey", on_click=self.clear)
 
     def run_end_survey2(self):
-        st.session_state.run_num += 1
-        with self.col1:
-            self.container_robot = st.empty()
-        with self.container_robot.container():
-            st.image(self.im_robot)
-        with self.col3:
-            self.container_placeholder = st.empty()
-        with self.container_placeholder.container():
-            user_num = str(st.session_state.table_num)
-            st.write("Your unique user number is: " + user_num)
-        with self.col2:
+Expand All
+	@@ -434,25 +458,26 @@ def run_end_survey2(self):
             self.container_captcha = st.empty()
         with self.container_captcha.container():
             with st.form("aisurvey2"):
@@ -471,11 +333,11 @@ class Game:
                 self.run_consent()
             elif st.session_state.run_num == -4:
                 self.run_demographics()
-            elif st.session_state.run_num == -1:
+            elif st.session_state.run_num == -3:
                 self.run_instructions()
             elif st.session_state.run_num == 0:
                 self.run_intro()
-            elif st.session_state.run_num == -3:
+            elif st.session_state.run_num == -1:
                 self.run_end_survey1()
             elif st.session_state.run_num <= 10:
                 self.run_game()
@@ -483,8 +345,6 @@ class Game:
                 self.run_end_survey2()
             else:
                 self.run_end()
-
-
 if __name__ == "__main__":
     gm = Game()
     gm.run()

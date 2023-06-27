@@ -49,7 +49,7 @@ class Game:
 
         # initializes state variable to keep track of amount of runs game has gone through
         if 'run_num' not in st.session_state:
-            st.session_state.run_num = 1
+            st.session_state.run_num = -1
 
         if 'to_continue' not in st.session_state:
             st.session_state.to_continue = 0
@@ -281,7 +281,7 @@ class Game:
             st.button("Start the game", on_click=self.clear_intro)
             
     def clear_intro(self):
-        self.container_captcha.empty()
+        time.sleep(0.01)
         
 
     # This function is what runs when someone wants to input their owns answer
@@ -393,9 +393,6 @@ class Game:
 
     # This clears the isntructions page
     def clear_instructions(self):
-        self.container_captcha.empty()
-        time.sleep(0.01)
-        self.container_placeholder.empty()
         time.sleep(0.01)
 
     # This runs the consent form just prior to the demographics form

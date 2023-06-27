@@ -278,7 +278,11 @@ class Game:
                 "Hello, I am QTRobot. I am here to help you get cash rewards for correctly completing CAPTCHAs. I can fill in the CAPTCHA automatically which takes less time than typing it in.")
             st.image(self.im_robot)
             time.sleep(5)
-            st.button("Start the game")
+            st.button("Start the game", on_click=self.clear_intro)
+
+    def clear_intro(self):
+        self.container_captcha.empty()
+        time.sleep(0.01)
         
 
     # This function is what runs when someone wants to input their owns answer
@@ -385,6 +389,10 @@ class Game:
             timer_image = Image.open("timer.png")
             st.image(st.session_state.run_image)
             st.image(timer_image)
+
+    def clear_instructions(self):
+        self.container_captcha.empty()
+        time.sleep(0.01)
 
     # This runs the consent form just prior to the demographics form
     def run_consent(self):

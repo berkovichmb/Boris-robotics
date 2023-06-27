@@ -383,13 +383,11 @@ class Game:
                         "-The longer you take the less money you will receive. The timer and reward counter are displayed on the right.  \n"
                         "-If you solve it incorrectly you will get no reward.  \n"
                         "-You will solve a total of ten CAPTCHAS in this game.\n")
-            submitted = st.button("I Understand")
+            st.button("I Understand", on_click=self.clear_instructions)
         with self.container_placeholder.container():
             timer_image = Image.open("timer.png")
             st.image(st.session_state.run_image)
             st.image(timer_image)
-        if submitted:
-            self.clear_instructions()
 
     # This clears the isntructions page
     def clear_instructions(self):

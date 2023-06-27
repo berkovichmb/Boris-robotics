@@ -359,9 +359,7 @@ class Game:
             with self.container_captcha.container():
                 st.title("You got no money!")
                 st.image(self.im_wrong)
-        submitted = st.button("Play again")
-        if submitted:
-            self.clear()
+        st.button("Play again")
 
     # This function ends the game
     def run_end(self):

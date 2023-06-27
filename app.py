@@ -362,7 +362,7 @@ class Game:
         st.button("Play again", on_click=self.clear_win_lose)
 
     def clear_win_lose(self):
-        time.sleep(0.01)
+        self.container_captcha.empty()
 
     # This function ends the game
     def run_end(self):

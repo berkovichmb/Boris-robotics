@@ -49,7 +49,7 @@ class Game:
 
         # initializes state variable to keep track of amount of runs game has gone through
         if 'run_num' not in st.session_state:
-            st.session_state.run_num = 0
+            st.session_state.run_num = -1
 
         if 'to_continue' not in st.session_state:
             st.session_state.to_continue = 0
@@ -271,12 +271,8 @@ class Game:
     # Second run
     def run_intro(self):
         st.session_state.run_num += 1
-        with self.col1:
-            self.container_robot = st.empty()
         with self.col2:
             self.container_captcha = st.empty()
-        with self.col3:
-            self.container_placeholder = st.empty()
         with self.container_captcha.container():
             st.write(
                 "Hello, I am QTRobot. I am here to help you get cash rewards for correctly completing CAPTCHAs. I can fill in the CAPTCHA automatically which takes less time than typing it in.")
@@ -399,7 +395,9 @@ class Game:
         time.sleep(0.01)
         self.container_placeholder.empty()
         time.sleep(0.01)
-    
+        self.container_robot.empty(
+        time.sleep(0.01)
+        )
 
     # This runs the consent form just prior to the demographics form
     def run_consent(self):

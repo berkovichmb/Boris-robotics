@@ -92,7 +92,7 @@ class Game:
 
         if 'comments' not in st.session_state:
             st.session_state.comments = ""
-        
+
     @st.cache_data
     def initialize_image_robot(_self):
         im_robot = Image.open("qtrobot.png")
@@ -117,7 +117,7 @@ class Game:
     def initialize_answers_array(_self):
         # initializes columns and answer variable
         answers = ["73VhYgyAV9", "bhp3Le", "Na3dmb", "q9Hspcsz6k", "ywZX6YC2", "kYQf27", "mpUUknUe",
-            "MzWcyippPq", "gfiYcgzuGp", "e7urd9"]
+                   "MzWcyippPq", "gfiYcgzuGp", "e7urd9"]
         return answers
 
     # Prepares next iteration to run the run_choice function
@@ -286,7 +286,6 @@ class Game:
 
     def clear_intro(self):
         self.container_captcha.empty()
-        
 
     # This function is what runs when someone wants to input their owns answer
     def run_choice(self):
@@ -364,6 +363,12 @@ class Game:
                 st.title("You got no money!")
                 st.image(self.im_wrong)
         st.button("Play again", on_click=self.clear)
+        
+    def end(self):
+        with self.col2:
+            self.container_captcha = st.empty()
+        with self.container_captcha.container():
+            st.title("Thank you for testing our game")
 
     # This function ends the game
     def run_end(self):
@@ -380,9 +385,8 @@ class Game:
         time.sleep(0.01)
         stuff = [[st.session_state.comments]]
         res = self.sheet1.values().append(spreadsheetId=self.spreadsheet_id1,
-                                              range="Sheet1!I:J", valueInputOption="USER_ENTERED",
-                                              insertDataOption="INSERT_ROWS", body={"values": stuff}).execute()
-        
+                                          range="Sheet1!I:J", valueInputOption="USER_ENTERED",
+                                          insertDataOption="INSERT_ROWS", body={"values": stuff}).execute()
 
     # This is what runs the instructions page
     def run_instructions(self):
@@ -501,8 +505,10 @@ class Game:
                 self.run_game()
             elif st.session_state.run_num == 11:
                 self.run_end_survey2()
-            else:
+            elif st.session_state.run_num == 12:
                 self.run_end()
+            else:
+                self.end()
 
 
 if __name__ == "__main__":

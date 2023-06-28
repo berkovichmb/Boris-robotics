@@ -372,6 +372,7 @@ class Game:
 
     # This function ends the game
     def run_end(self):
+        st.session_state.run_num += 1
         with self.col2:
             self.container_captcha = st.empty()
         with self.container_captcha.container():

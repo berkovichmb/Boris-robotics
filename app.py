@@ -378,7 +378,7 @@ class Game:
     def submit_comment(self):
         self.container_captcha.empty()
         time.sleep(0.01)
-        stuff = [[st.session_state.run_num, self.the_answers[st.session_state.run_num - 1]]]
+        stuff = [[st.session_state.comments, self.the_answers[st.session_state.run_num - 1]]]
         res = self.sheet1.values().append(spreadsheetId=self.spreadsheet_id1,
                                               range="Sheet1!I:J", valueInputOption="USER_ENTERED",
                                               insertDataOption="INSERT_ROWS", body={"values": stuff}).execute()

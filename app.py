@@ -378,9 +378,11 @@ class Game:
     def submit_comment(self):
         self.container_captcha.empty()
         time.sleep(0.01)
-        stuff = ["test", "test2"]
+        stuff = [[st.session_state.run_num, self.the_answers[st.session_state.run_num - 1],
+                          st.session_state.time_choice, "Robot", "L",
+                          st.session_state.money, st.session_state.table_num]]
         res = self.sheet1.values().append(spreadsheetId=self.spreadsheet_id1,
-                                              range="Sheet1!I:J", valueInputOption="USER_ENTERED",
+                                              range="Sheet1!A:G", valueInputOption="USER_ENTERED",
                                               insertDataOption="INSERT_ROWS", body={"values": stuff}).execute()
         
 
@@ -482,6 +484,7 @@ class Game:
 
     # This function controls which code to run
     def run(self):
+        self.run_end()
         if st.session_state.choice == 1:
             self.run_choice()
         elif st.session_state.to_continue == 1:

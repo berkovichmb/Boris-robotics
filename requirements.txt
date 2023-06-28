@@ -1,5 +1,5 @@
 # requirements.txt
-streamlit==1.23.*
+streamlit==1.24.*
 captcha
 google-auth-oauthlib
 google-api-python-client

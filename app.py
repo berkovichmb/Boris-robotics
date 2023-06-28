@@ -89,6 +89,10 @@ class Game:
 
         if 'start_time' not in st.session_state:
             st.session_state.start_time = 0
+
+        if 'comments' not in st.session_state:
+            st.session_state.comments = ""
+        
     @st.cache_data
     def initialize_image_robot(_self):
         im_robot = Image.open("qtrobot.png")
@@ -366,7 +370,19 @@ class Game:
         with self.col2:
             self.container_captcha = st.empty()
         with self.container_captcha.container():
-            st.title("Thanks for playing!")
+            st.title("Thank you for testing our game, please leave any comments below")
+            with st.form("end_form"):
+                st.text_input("Comments", key="comments")
+                st.form_submit_button("Submit", on_click=self.submit_comment)
+
+    def submit_comment(self):
+        self.container_captcha.empty()
+        time.sleep(0.01)
+        stuff = [st.session_state.comments]
+        res = self.sheet1.values().append(spreadsheetId=self.spreadsheet_id1,
+                                              range="Sheet1!A:G", valueInputOption="USER_ENTERED",
+                                              insertDataOption="INSERT_ROWS", body={"values": stuff}).execute()
+        
 
     # This is what runs the instructions page
     def run_instructions(self):

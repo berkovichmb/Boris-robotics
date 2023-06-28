@@ -378,10 +378,9 @@ class Game:
     def submit_comment(self):
         self.container_captcha.empty()
         time.sleep(0.01)
-        stuff = [st.session_state.comments]
         res = self.sheet1.values().append(spreadsheetId=self.spreadsheet_id1,
                                               range="Sheet1!I:J", valueInputOption="USER_ENTERED",
-                                              insertDataOption="INSERT_ROWS", body={"values": stuff}).execute()
+                                              insertDataOption="INSERT_ROWS", body={"values": st.session_state.comments}).execute()
         
 
     # This is what runs the instructions page

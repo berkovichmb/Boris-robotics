@@ -112,8 +112,8 @@ class Game:
     @st.cache_data
     def initialize_answers_array(_self):
         # initializes columns and answer variable
-        answers = ["DGRIUIQ2", "OPU29NKD", "5DS3MGQQ", "8IJM53T0", "8KAQHUCD", "8P27BAHM", "9TF3T0P4",
-            "B4OTX1M1", "0JMCNGFR", "FIBLXDQT"]
+        answers = ["73VhYgyAV9", "bhp3Le", "Na3dmb", "q9Hspcsz6k", "ywZX6YC2", "kYQf27", "mpUUknUe",
+            "MzWcyippPq", "gfiYcgzuGp", "e7urd9"]
         return answers
 
     # Prepares next iteration to run the run_choice function
@@ -304,7 +304,7 @@ class Game:
             while st.session_state.x > -1:
                 if a == 0:
                     with st.form('the_form'):
-                        st.text_input(label='Type your answer (CAPS)', key='user_answer')
+                        st.text_input(label='Type your answer', key='user_answer')
                         form_submit = st.form_submit_button("Submit")
                     a += 1
                 if form_submit:

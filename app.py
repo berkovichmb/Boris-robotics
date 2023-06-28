@@ -482,7 +482,6 @@ class Game:
 
     # This function controls which code to run
     def run(self):
-        self.run_end()
         if st.session_state.choice == 1:
             self.run_choice()
         elif st.session_state.to_continue == 1:

@@ -129,20 +129,26 @@ class Game:
         st.session_state.time_choice = self.end - st.session_state.start_time
         st.session_state.choice = 1
 
+    def answer_robot(self):
+        self.container_robot.empty()
+        self.container_captcha.empty()
+        self.container_placeholder.empty()
+        self.end = time.time()
+        st.session_state.time_choice = self.end - st.session_state.start_time
+        st.session_state.choice = 2
+
     # This clears the container after the prize screen
     def clear(self):
         self.container_captcha.empty()
 
     # function for winning screen
     def win_lose_robot(self):
+        st.session_state.choice = 0
         robot_answer = str(self.the_answers[st.session_state.run_num - 1])
-        self.end = time.time()
-        self.container_robot.empty()
-        time.sleep(0.01)
-        self.container_captcha.empty()
-        time.sleep(0.01)
-        self.container_placeholder.empty()
-        time.sleep(0.01)
+        with self.col1:
+            self.container_robot = st.empty()
+        with self.col2:
+            self.container_captcha = st.empty()
         if st.session_state.out_of_time == 1:
             st.session_state.out_of_time = 0
             stuff = [
@@ -153,15 +159,10 @@ class Game:
                                               range="Sheet1!A:G", valueInputOption="USER_ENTERED",
                                               insertDataOption="INSERT_ROWS", body={"values": stuff}).execute()
             st.session_state.run_num += 1
-            i = 0
-            e = 8
-            while i < 1:
-                with self.container_captcha.container():
-                    st.title("You got no money!")
-                    st.image(self.im_wrong)
-                    st.button("Play again", key=e, on_click=self.clear)
-                    e += 1
-                    time.sleep(1)
+            with self.container_captcha.container():
+                st.title("You got no money!")
+                st.image(self.im_wrong)
+                st.button("Play again", on_click=self.clear)
         else:
             with self.container_robot.container():
                 st.write("I believe the answer is " + robot_answer + ", ill submit it for you.")
@@ -172,7 +173,6 @@ class Game:
             the_amount = str(st.session_state.x / 100)
             if robot_answer == self.the_answers[st.session_state.run_num - 1]:
                 st.session_state.money += st.session_state.x / 100
-                st.session_state.time_choice = self.end - st.session_state.start_time
                 # This is what updates Google sheets
                 stuff = [[st.session_state.run_num, self.the_answers[st.session_state.run_num - 1],
                           st.session_state.time_choice, "Robot", "W", st.session_state.money,
@@ -181,19 +181,11 @@ class Game:
                                                   range="Sheet1!A:G", valueInputOption="USER_ENTERED",
                                                   insertDataOption="INSERT_ROWS", body={"values": stuff}).execute()
                 st.session_state.run_num += 1
-                i = 0
-                e = 8
-                while i < 1:
-                    with self.container_captcha.container():
-                        st.title("You got $" + the_amount)
-                        st.image(self.im_money)
-                        st.button("Play again", key=e, on_click=self.clear)
-                        time.sleep(1)
-                        e += 1
-
-                self.container_captcha.empty()
+                with self.container_captcha.container():
+                    st.title("You got $" + the_amount)
+                    st.image(self.im_money)
+                    st.button("Play again", on_click=self.clear)
             elif robot_answer != self.the_answers[st.session_state.run_num - 1]:
-                st.session_state.time_choice = self.end - st.session_state.start_time
                 # This is what updates Google sheets
                 stuff = [[st.session_state.run_num, self.the_answers[st.session_state.run_num - 1],
                           st.session_state.time_choice, "Robot", "L",
@@ -202,15 +194,10 @@ class Game:
                                                   range="Sheet1!A:G", valueInputOption="USER_ENTERED",
                                                   insertDataOption="INSERT_ROWS", body={"values": stuff}).execute()
                 st.session_state.run_num += 1
-                i = 0
-                e = 8
-                while i < 1:
-                    with self.container_captcha.container():
-                        st.title("You got no money!")
-                        st.image(self.im_wrong)
-                        st.button("Play again", key=e, on_click=self.clear)
-                        time.sleep(1)
-                        e += 1
+                with self.container_captcha.container():
+                    st.title("You got no money!")
+                    st.image(self.im_wrong)
+                    st.button("Play again", key=e, on_click=self.clear)
 
     def run_continue(self):
         st.session_state.to_continue = 0
@@ -246,7 +233,7 @@ class Game:
         while st.session_state.x > -1:
             with self.container_captcha.container():
                 st.image(captcha_im)
-                st.button("Yes", key=d, on_click=self.win_lose_robot)
+                st.button("Yes", key=d, on_click=self.answer_robot)
                 st.button("Input my own", key=w, on_click=self.answer_self)
                 w += 1
                 d += 1
@@ -363,7 +350,7 @@ class Game:
                 st.title("You got no money!")
                 st.image(self.im_wrong)
         st.button("Play again", on_click=self.clear)
-        
+
     def end(self):
         with self.col2:
             self.container_captcha = st.empty()
@@ -489,6 +476,8 @@ class Game:
     def run(self):
         if st.session_state.choice == 1:
             self.run_choice()
+        elif st.session_state.choice == 2:
+            self.win_lose_robot()
         elif st.session_state.to_continue == 1:
             self.run_continue()
         else:

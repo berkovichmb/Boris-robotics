@@ -162,7 +162,7 @@ class Game:
             with self.container_captcha.container():
                 st.title("You got no money!")
                 st.image(self.im_wrong)
-                st.button("Play again", on_click=self.clear)
+                time.sleep(5)
         else:
             with self.container_robot.container():
                 st.write("I believe the answer is " + robot_answer + ", ill submit it for you.")
@@ -184,7 +184,7 @@ class Game:
                 with self.container_captcha.container():
                     st.title("You got $" + the_amount)
                     st.image(self.im_money)
-                    st.button("Play again", on_click=self.clear)
+                    time.sleep(5)
             elif robot_answer != self.the_answers[st.session_state.run_num - 1]:
                 # This is what updates Google sheets
                 stuff = [[st.session_state.run_num, self.the_answers[st.session_state.run_num - 1],
@@ -197,7 +197,12 @@ class Game:
                 with self.container_captcha.container():
                     st.title("You got no money!")
                     st.image(self.im_wrong)
-                    st.button("Play again", key=e, on_click=self.clear)
+                    time.sleep(5)
+            with self.container_captcha.container():
+                with st.form("aisurvey1"):
+                    st.markdown(
+                        "Robot survey: [link](https://boris-robotics-2kwpuqpttzt.streamlit.app/)")
+                    st.form_submit_button("I have completed the Robot survey", on_click=self.clear)
 
     def run_continue(self):
         st.session_state.to_continue = 0
@@ -349,7 +354,12 @@ class Game:
             with self.container_captcha.container():
                 st.title("You got no money!")
                 st.image(self.im_wrong)
-        st.button("Play again", on_click=self.clear)
+         with self.container_captcha.container():
+                with st.form("aisurvey1"):
+                    st.markdown(
+                        "Robot survey: [link](https://boris-robotics-2kwpuqpttzt.streamlit.app/)")
+                    st.form_submit_button("I have completed the Robot survey", on_click=self.clear)
+
 
     def end(self):
         with self.col2:

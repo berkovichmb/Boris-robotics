@@ -354,11 +354,11 @@ class Game:
             with self.container_captcha.container():
                 st.title("You got no money!")
                 st.image(self.im_wrong)
-         with self.container_captcha.container():
-                with st.form("aisurvey1"):
-                    st.markdown(
+        with self.container_captcha.container():
+            with st.form("aisurvey1"):
+                st.markdown(
                         "Robot survey: [link](https://boris-robotics-2kwpuqpttzt.streamlit.app/)")
-                    st.form_submit_button("I have completed the Robot survey", on_click=self.clear)
+                st.form_submit_button("I have completed the Robot survey", on_click=self.clear)
 
 
     def end(self):

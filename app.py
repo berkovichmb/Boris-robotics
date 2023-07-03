@@ -200,6 +200,8 @@ class Game:
                     time.sleep(5)
             with self.container_captcha.container():
                 with st.form("aisurvey1"):
+                    user_num = str(st.session_state.table_num)
+                    st.markdown("Your unique user number is: " + user_num)
                     st.markdown(
                         "Robot survey: [link](https://boris-robotics-2kwpuqpttzt.streamlit.app/)")
                     st.form_submit_button("I have completed the Robot survey", on_click=self.clear)
@@ -356,6 +358,8 @@ class Game:
                 st.image(self.im_wrong)
         with self.container_captcha.container():
             with st.form("aisurvey1"):
+                user_num = str(st.session_state.table_num)
+                st.markdown("Your unique user number is: " + user_num)
                 st.markdown(
                         "Robot survey: [link](https://boris-robotics-2kwpuqpttzt.streamlit.app/)")
                 st.form_submit_button("I have completed the Robot survey", on_click=self.clear)

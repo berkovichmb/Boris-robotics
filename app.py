@@ -5,7 +5,7 @@ import time
 from PIL import Image
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
-
+import os
 
 class Game:
     def __init__(self):
@@ -92,6 +92,18 @@ class Game:
 
         if 'comments' not in st.session_state:
             st.session_state.comments = ""
+
+        if 'knew_answer' not in st.session_state:
+            st.session_state.knew_answer = 4
+
+        if 'competence' not in st.session_state:
+            st.session_state.competence = 4
+
+        if 'describe' not in st.session_state:
+            st.session_state.describe = 4
+
+        if 'round_survey' not in st.session_state:
+            st.session_state.round_survey = 0
 
     @st.cache_data
     def initialize_image_robot(_self):
@@ -198,16 +210,14 @@ class Game:
                     st.title("You got no money!")
                     st.image(self.im_wrong)
                     time.sleep(5)
-            with self.container_captcha.container():
-                with st.form("aisurvey1"):
-                    user_num = str(st.session_state.table_num)
-                    st.markdown("Your unique user number is: " + user_num)
-                    st.markdown(
-                        "Robot survey: [link](https://boris-robotics-2kwpuqpttzt.streamlit.app/)")
-                    st.form_submit_button("I have completed the Robot survey", on_click=self.clear)
+            st.session_state.to_continue = 1
+            st.button("Play again", on_click=self.clear)
+
 
     def run_continue(self):
         st.session_state.to_continue = 0
+        if st.session_state.run_num >= 2:
+            st.session_state.round_survey = 1
         with self.col1:
             self.container_robot = st.empty()
         with self.col2:
@@ -217,6 +227,31 @@ class Game:
             st.image(self.im_robot)
         with self.container_captcha.container():
             st.button("Continue", on_click=self.clear)
+
+    def run_round_survey(self):
+        st.session_state.round_survey = 0
+        with self.col1:
+            self.container_robot = st.empty()
+        with self.col2:
+            self.container_survey = st.empty()
+        with self.container_robot.container():
+            st.image(self.im_robot)
+        with self.container_survey.container():
+            with st.form("my_form"):
+                st.slider("Did you trust that the robot knew the answer? (1 = Did not trust, 7 = Trusted completely)", 1, 7, key='knew_answer')
+                st.slider("How would you rate the competence of the robot? (1 = Very incompetent, 7 = Very competent)", 1, 7, key='competence')
+                st.slider("How would you describe the robot? (1 = Cold, 7 = Warm)", 1, 7, key='describe')
+                st.form_submit_button("Submit", on_click=self.round_survey_submit)
+
+    def round_survey_submit(self):
+        self.container_survey.empty()
+        spreadsheet_id2 = '19dRHX2Ne9ip-uYs502Mt6FGFWFpVIH7bRGWNajYxXKI'
+        time.sleep(0.01)
+        stuff = [[st.session_state.table_num, st.session_state.knew_answer, st.session_state.competence,
+                      st.session_state.describe]]
+        res = self.sheet1.values().append(spreadsheetId=spreadsheet_id2,
+                                              range="Sheet1!A:D", valueInputOption="USER_ENTERED",
+                                              insertDataOption="INSERT_ROWS", body={"values": stuff}).execute()
 
     # This runs the game
     def run_game(self):
@@ -237,7 +272,7 @@ class Game:
         st.session_state.timer_num = 1
         w = 5000
         d = 4000
-        while st.session_state.x > -1:
+        for x in range(st.session_state.x):
             with self.container_captcha.container():
                 st.image(captcha_im)
                 st.button("Yes", key=d, on_click=self.answer_robot)
@@ -298,7 +333,7 @@ class Game:
         a = 0
         with self.container_captcha.container():
             st.image(captcha_im)
-            while st.session_state.x > -1:
+            for x in range(st.session_state.x):
                 if a == 0:
                     with st.form('the_form'):
                         st.text_input(label='Type your answer', key='user_answer')
@@ -356,13 +391,8 @@ class Game:
             with self.container_captcha.container():
                 st.title("You got no money!")
                 st.image(self.im_wrong)
-        with self.container_captcha.container():
-            with st.form("aisurvey1"):
-                user_num = str(st.session_state.table_num)
-                st.markdown("Your unique user number is: " + user_num)
-                st.markdown(
-                        "Robot survey: [link](https://boris-robotics-2kwpuqpttzt.streamlit.app/)")
-                st.form_submit_button("I have completed the Robot survey", on_click=self.clear)
+        st.session_state.to_continue = 1
+        st.button("Play again", on_click=self.clear)
 
 
     def end(self):
@@ -492,6 +522,8 @@ class Game:
             self.run_choice()
         elif st.session_state.choice == 2:
             self.win_lose_robot()
+        elif st.session_state.round_survey == 1:
+            self.run_round_survey()
         elif st.session_state.to_continue == 1:
             self.run_continue()
         else:

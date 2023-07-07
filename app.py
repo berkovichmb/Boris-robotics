@@ -6,6 +6,7 @@ from PIL import Image
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
 import gc
+import os
 
 class Game:
     def __init__(self):

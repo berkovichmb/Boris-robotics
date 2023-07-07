@@ -5,7 +5,7 @@ import time
 from PIL import Image
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
-import os
+import gc
 
 class Game:
     def __init__(self):
@@ -550,4 +550,5 @@ class Game:
 
 if __name__ == "__main__":
     gm = Game()
+    gc.collect()
     gm.run()

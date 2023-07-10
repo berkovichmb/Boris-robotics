@@ -25,15 +25,7 @@ class Game:
         st.markdown(hide_menu_style, unsafe_allow_html=True)
 
         # Initializing the Google sheets connection for the data and demographics survey
-        creds1 = service_account.Credentials.from_service_account_info(
-            st.secrets["gcp_service_account1"],
-            scopes=[
-                "https://www.googleapis.com/auth/spreadsheets",
-            ],
-        )
-        self.spreadsheet_id1 = '1XDYHfCOPz7s9etxCGA9p3JBafXsWulkwa90O8OjEtz4'
-        service1 = build('sheets', 'v4', credentials=creds1)
-        self.sheet1 = service1.spreadsheets()
+        self.sheet1 = self.initialize_connection()
 
         # imports CSS file for cuztomization
         with open('style.css') as f:
@@ -125,6 +117,18 @@ class Game:
     def initialize_image_wrong(_self):
         im_wrong = Image.open("wrong.png")
         return im_wrong
+
+    @st.cache_resource
+    def initialize_connection(_self):
+        the_secrets = os.path.join(os.getcwd(), 'secret_account.json')
+        creds1 = service_account.Credentials.from_service_account_file(
+            the_secrets,
+            scopes=[
+                "https://www.googleapis.com/auth/spreadsheets",
+            ],
+        )
+        service1 = build('sheets', 'v4', credentials=creds1)
+        return service1.spreadsheets()
 
     @st.cache_data
     def initialize_answers_array(_self):

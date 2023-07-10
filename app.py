@@ -25,6 +25,7 @@ class Game:
         st.markdown(hide_menu_style, unsafe_allow_html=True)
 
         # Initializing the Google sheets connection for the data and demographics survey
+        self.spreadsheet_id1 = '1XDYHfCOPz7s9etxCGA9p3JBafXsWulkwa90O8OjEtz4'
         self.sheet1 = self.initialize_connection()
 
         # imports CSS file for cuztomization

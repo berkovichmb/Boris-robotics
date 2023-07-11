@@ -146,6 +146,7 @@ class Game:
         self.end = time.time()
         st.session_state.time_choice = self.end - st.session_state.start_time
         st.session_state.choice = 1
+        gc.collect()
 
     def answer_robot(self):
         self.container_robot.empty()
@@ -154,10 +155,12 @@ class Game:
         self.end = time.time()
         st.session_state.time_choice = self.end - st.session_state.start_time
         st.session_state.choice = 2
+        gc.collect()
 
     # This clears the container after the prize screen
     def clear(self):
         self.container_captcha.empty()
+        gc.collect()
 
     # function for winning screen
     def win_lose_robot(self):

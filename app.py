@@ -266,6 +266,8 @@ class Game:
             with self.container_captcha.container():
                 st.title("You got no money!")
                 st.image(st.session_state.im_wrong)
+                st.session_state.to_continue = 1
+                st.button("Play again", on_click=self.clear)
         else:
             with self.container_robot.container():
                 st.write("I believe the answer is " + robot_answer + ", ill submit it for you.")
@@ -287,6 +289,8 @@ class Game:
                 with self.container_captcha.container():
                     st.title("You got $" + the_amount)
                     st.image(st.session_state.im_money)
+                    st.session_state.to_continue = 1
+                    st.button("Play again", on_click=self.clear)
             elif robot_answer != st.session_state.the_answers[st.session_state.run_num - 1]:
                 # This is what updates Google sheets
                 stuff = [[st.session_state.run_num, st.session_state.the_answers[st.session_state.run_num - 1],
@@ -299,8 +303,8 @@ class Game:
                 with self.container_captcha.container():
                     st.title("You got no money!")
                     st.image(st.session_state.im_wrong)
-            st.session_state.to_continue = 1
-            st.button("Play again", on_click=self.clear)
+                    st.session_state.to_continue = 1
+                    st.button("Play again", on_click=self.clear)
 
 
     def run_continue(self):

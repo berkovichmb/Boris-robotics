@@ -584,14 +584,14 @@ class Game:
                         "  \n I confirm I am volunteering freely to participate in this research project. I have read and fully understand the purpose of the research project and its risks and benefits. I have had the opportunity to read this document and discuss my concerns and questions. I consent to participate in this research."
                         )
             st.button("I agree", on_click=self.clear)
-            disagree = st.button("I disagree")
-            if disagree:
-                self.disagree()
+            st.button("I disagree", on_click=self.disagree)
 
     def disagree(self):
         self.container_captcha.empty()
         time.sleep(0.01)
         st.write("Close this screen")
+        st.session_state.run_num = -1000
+        time.sleep(10000)
 
     def run_demographics(self):
         st.session_state.run_num += 1

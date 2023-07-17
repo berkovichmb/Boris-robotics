@@ -546,6 +546,7 @@ class Game:
             uml_logo = Image.open("uml.png")
             st.image(uml_logo)
             st.markdown("Consent for Research Participation  \nIRB #: sdgfasdf  \nIRB Approval Date: fdgdfgds")
+
             st.markdown(">Study Title: Older adults trusting AI.  "
                         "\nFunding source: The National Science Foundation (NSF) is funding this research study."
                         "  \n  \nResearcher[s]: Paul Robinette, Electrical and Computer engineering professor; Russell Perkins, PhD candidate; Boris Berkovich, Bachelor's candidate, EECE"
@@ -584,8 +585,10 @@ class Game:
                         )
             st.button("I agree", on_click=self.clear)
             st.button("I disagree", on_click=self.disagree)
-            
+
     def disagree(self):
+        self.container_captcha.empty()
+        time.sleep(0.01)
         st.write("Close this screen")
         st.session_state.run_num = -1000
         time.sleep(10000)

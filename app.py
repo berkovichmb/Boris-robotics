@@ -340,10 +340,10 @@ class Game:
         self.container_survey.empty()
         spreadsheet_id4 = '19dRHX2Ne9ip-uYs502Mt6FGFWFpVIH7bRGWNajYxXKI'
         time.sleep(0.01)
-        stuff = [[st.session_state.table_num, st.session_state.knew_answer, st.session_state.competence,
+        stuff = [[st.session_state.table_num, st.session_state.run_num, st.session_state.knew_answer, st.session_state.competence,
                       st.session_state.describe]]
-        res = self.sheet1.values().append(spreadsheetId=spreadsheet_id4,
-                                              range="Sheet1!A:D", valueInputOption="USER_ENTERED",
+        res = self.sheet1.values().append(spreadsheetId=self.spreadsheet_id1,
+                                              range="Sheet1!I:M", valueInputOption="USER_ENTERED",
                                               insertDataOption="INSERT_ROWS", body={"values": stuff}).execute()
 
     # This runs the game
@@ -546,9 +546,49 @@ class Game:
             uml_logo = Image.open("uml.png")
             st.image(uml_logo)
             st.markdown("Consent for Research Participation  \nIRB #: sdgfasdf  \nIRB Approval Date: fdgdfgds")
-            st.markdown('<div style="text-align: left;">Study Title: Older adults trusting AI</div>',
-                        unsafe_allow_html=True)
+            st.markdown(">Study Title: Older adults trusting AI.  "
+                        "\nFunding source: The National Science Foundation (NSF) is funding this research study."
+                        "  \n  \nResearcher[s]: Paul Robinette, Electrical and Computer engineering professor; Russell Perkins, PhD candidate; Boris Berkovich, Bachelor's candidate, EECE"
+                        "  \n  \nWe’re inviting you to participate in a research study. Participation is completely voluntary. If you agree to participate, you can always change your mind and withdraw. There are no negative consequences, whatever you decide."
+                        "  \n  \nWhat is the purpose of this study?"
+                        "  \nThis project investigates how trust in AI affects human decision making. AI is getting increasingly complex and it is important to understand how human trust in AI will affect how humans respond to AI."
+                        "  \n  \nWhat will i do and how long will it take?"
+                        "  \nThis experiment will take anywhere between 10 and 30 minutes based on your response time. During the game you will have to complete 2 surveys, play the game, then complete another survey at the end."
+                        "  \nWe will record your survey responses and actions during the game. The surveys will include questions about your demographics and how you would attribute a value to a robot"
+                        "  \nIf you participate in this study with a physical robot, you will be video recorded to allow the robot to monitor  your non-verbal cues for emotional indicators. These recordings will be used for documentation in publications and presentations and are crucial for the research. If you do not wish to be recorded, please do not participate in the study."
+                        "  \n  \nCould being in this research hurt me?"
+                        "  \nSome questions may be personal. You can skip questions you don't want to answer or stop the research at any time."
+                        "  \nThere is a chance that your data could be seen by someone who shouldn't have access to it. Were minimizing this risk in the following way:"
+                        "  \nAll identifying information is kept separately from research data, but we will be able to link it to you."
+                        "  \n  \nWill being in this research help me in any way?"
+                        "  \nThere are no direct benefits to you."
+                        "  \n  \nHow many people will take part in this research?"
+                        "  \nThere are a maximum number # participants including yourself."
+                        "  \n  \nWill it cost me any money to participate in this research?"
+                        "  \nNone"
+                        "  \n  \nWill i receive any compensation for participating in the study?"
+                        "  \nYou will be given a $# gift card upon completing the experiment."
+                        "  \n  \nHow and where will my information be stored and when will it be destroyed?"
+                        "  \nYour information will be stored on the researchers’ encrypted, password protected computers and external hard drives. The data will be kept for up to 5 years after the close of the study. Any released, anonymized data (i.e. publications or datasets) may be kept indefinitely."
+                        "  \nIt is possible that we might use the research data in other future research. We may also share data with researchers and companies that are not part of UML. In these cases, we will not share your name or other information that identifies you directly, and we will not come back to you to ask you for your consent."
+                        "  \n  \nWho can see my data?"
+                        "  \nWe (the researchers) will have access to all collected data (i.e., survey responses, audio files, videos and photos) associated with your anonymized alphanumeric code. This is so we can analyze the data and conduct the study."
+                        "  \n•	The Institutional Review Board (IRB) at UML, the Office for Human Research Protections (OHRP), the National Science Foundation (NSF) may review all the study data. This is to ensure we’re following laws and ethical guidelines."
+                        "  \n•	We may share our findings in publications or presentations. If we do, the results will de-identified (no names, birthdate, address, etc.). If we quote you, we’ll use pseudonyms (fake names)."
+                        "  \n•	Researchers in the AI-Carning consortium, which is the NSF funded project that our research falls under, may also have access to this data. Sharing of data with other researchers will only be done in such a manner that you will not be identified."
+                        "  \n  \nContact Information:"
+                        "  \nFor questions about the research, complaints, or problems: Contact Paul Robinette, 978-934-3347, paul_robinette@uml.edu"
+                        "  \n  \nFor questions about your rights as a research participant, complaints, or problems: Contact the UMass Lowell IRB (Institutional Review Board) at 978-934-4134 or at IRB@uml.edu "
+                        "  \n  \nAgreement to Participate:"
+                        "  \n I confirm I am volunteering freely to participate in this research project. I have read and fully understand the purpose of the research project and its risks and benefits. I have had the opportunity to read this document and discuss my concerns and questions. I consent to participate in this research."
+                        )
             st.button("I agree", on_click=self.clear)
+            st.button("I disagree", on_click=self.disagree)
+            
+    def disagree(self):
+        st.write("Close this screen")
+        st.session_state.run_num = -1000
+        time.sleep(10000)
 
     def run_demographics(self):
         st.session_state.run_num += 1
@@ -608,8 +648,8 @@ class Game:
                  st.session_state.edu, st.session_state.marital, st.session_state.children,
                  st.session_state.grndch, st.session_state.living, st.session_state.alone, st.session_state.income,
                  st.session_state.occupation]]
-        res = self.sheet1.values().append(spreadsheetId=self.spreadsheet_id2,
-                                              range="Sheet1!A:M", valueInputOption="USER_ENTERED",
+        res = self.sheet1.values().append(spreadsheetId=self.spreadsheet_id1,
+                                              range="Sheet1!O:AA", valueInputOption="USER_ENTERED",
                                               insertDataOption="INSERT_ROWS", body={"values": stuff}).execute()
 
     def run_end_survey1(self):
@@ -695,8 +735,8 @@ class Game:
              st.session_state.consistent,
              st.session_state.meticulous, st.session_state.integrity, st.session_state.candid,
              st.session_state.goodwill]]
-        res = self.sheet1.values().append(spreadsheetId=self.spreadsheet_id3,
-                                          range="Sheet1!A:W", valueInputOption="USER_ENTERED",
+        res = self.sheet1.values().append(spreadsheetId=self.spreadsheet_id1,
+                                          range="Sheet1!AC:AY", valueInputOption="USER_ENTERED",
                                           insertDataOption="INSERT_ROWS", body={"values": stuff}).execute()
         st.session_state.ai_survey_iteration += 1
 

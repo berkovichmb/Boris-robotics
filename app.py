@@ -589,7 +589,8 @@ class Game:
     def disagree(self):
         self.container_captcha.empty()
         time.sleep(0.01)
-        st.write("Close this screen")
+        with self.container_captcha:
+            st.write("Close this screen")
         st.session_state.run_num = -1000
         time.sleep(10000)
 

@@ -340,7 +340,7 @@ class Game:
         self.container_survey.empty()
         spreadsheet_id4 = '19dRHX2Ne9ip-uYs502Mt6FGFWFpVIH7bRGWNajYxXKI'
         time.sleep(0.01)
-        stuff = [[st.session_state.table_num, st.session_state.run_num, st.session_state.knew_answer, st.session_state.competence,
+        stuff = [[st.session_state.table_num, st.session_state.run_num - 1, st.session_state.knew_answer, st.session_state.competence,
                       st.session_state.describe]]
         res = self.sheet1.values().append(spreadsheetId=self.spreadsheet_id1,
                                               range="Sheet1!I:M", valueInputOption="USER_ENTERED",
@@ -547,6 +547,15 @@ class Game:
             st.image(uml_logo)
             st.markdown("Consent for Research Participation  \nIRB #: sdgfasdf  \nIRB Approval Date: fdgdfgds")
 
+            with open('style_consent.css') as f:
+                st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
+                # customizes button css
+                m = st.markdown("""<style>
+                    div.stButton{
+                    display:block;
+                    margin:auto;
+                    }
+                    </style>""", unsafe_allow_html=True)
             st.markdown(">Study Title: Older adults trusting AI.  "
                         "\nFunding source: The National Science Foundation (NSF) is funding this research study."
                         "  \n  \nResearcher[s]: Paul Robinette, Electrical and Computer engineering professor; Russell Perkins, PhD candidate; Boris Berkovich, Bachelor's candidate, EECE"
@@ -584,15 +593,15 @@ class Game:
                         "  \n I confirm I am volunteering freely to participate in this research project. I have read and fully understand the purpose of the research project and its risks and benefits. I have had the opportunity to read this document and discuss my concerns and questions. I consent to participate in this research."
                         )
             st.button("I agree", on_click=self.clear)
-            st.button("I disagree", on_click=self.disagree)
+            st.button("I disagree", on_click=self.clear_disagree)
 
-    def disagree(self):
+    def clear_disagree(self):
         self.container_captcha.empty()
         time.sleep(0.01)
-        with self.container_captcha:
-            st.write("Close this screen")
         st.session_state.run_num = -1000
-        time.sleep(10000)
+
+    def disagree(self):
+        st.title("Close this screen")
 
     def run_demographics(self):
         st.session_state.run_num += 1
@@ -748,6 +757,8 @@ class Game:
     def run(self):
         if st.session_state.choice == 1:
             self.run_choice()
+        elif st.session_state.run_num == -1000:
+            self.disagree()
         elif st.session_state.choice == 2:
             self.win_lose_robot()
         elif st.session_state.round_survey == 1:

@@ -38,8 +38,8 @@ class Game:
 
         # initializes state variable to keep track of amount of runs game has gone
         if 'the_answers' not in st.session_state:
-            st.session_state.the_answers = ["73VhYgyAV9", "bhp3Le", "Na3dmb", "q9Hspcsz6k", "ywZX6YC2", "kYQf27", "mpUUknUe",
-                   "MzWcyippPq", "gfiYcgzuGp", "e7urd9"]
+            st.session_state.the_answers = ["HnGVzhZyN2", "MNKLqLbRV6", "L92dQNe7XR", "3vxuzxd4", " 6cq2VgCWH2", " 4dVncp", "rGrymZ2i",
+                   "bqMwvu", "6VqYGz", "36MyxhRH"]
 
         if 'im_robot' not in st.session_state:
             st.session_state.im_robot = Image.open("qtrobot.png")
@@ -501,6 +501,7 @@ class Game:
             self.container_captcha = st.empty()
         with self.container_captcha.container():
             st.title("Thanks for playing!")
+            st.title("Click the link to return to Prolific and confirm you have completed this study [link] (https://app.prolific.co/submissions/complete?cc=CPRXHZJD)")
 
 
     # This is what runs the instructions page
@@ -577,7 +578,7 @@ class Game:
                         "  \n  \nWill it cost me any money to participate in this research?"
                         "  \nNone"
                         "  \n  \nWill i receive any compensation for participating in the study?"
-                        "  \nYou will be given a $# gift card upon completing the experiment."
+                        "  \nYou will be given a $5 gift card upon completing the experiment and additional money based on your performance in the game."
                         "  \n  \nHow and where will my information be stored and when will it be destroyed?"
                         "  \nYour information will be stored on the researchers’ encrypted, password protected computers and external hard drives. The data will be kept for up to 5 years after the close of the study. Any released, anonymized data (i.e. publications or datasets) may be kept indefinitely."
                         "  \nIt is possible that we might use the research data in other future research. We may also share data with researchers and companies that are not part of UML. In these cases, we will not share your name or other information that identifies you directly, and we will not come back to you to ask you for your consent."

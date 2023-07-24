@@ -717,6 +717,7 @@ class Game:
 
     def run_end_survey2(self):
         st.session_state.run_num += 1
+        self.col1, self.col2, self.col3 = st.columns((1, 15, 1))
         with self.col1:
             self.container_robot = st.empty()
         with self.container_robot.container():

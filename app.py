@@ -256,7 +256,7 @@ class Game:
         if st.session_state.out_of_time == 1:
             st.session_state.out_of_time = 0
             stuff = [
-                [st.session_state.run_num, st.session_state.the_answers[st.session_state.run_num - 1], 100,
+                [st.session_state.run_num, st.session_state.the_answers[st.session_state.run_num - 1], 20,
                  "Out of time", "L",
                  st.session_state.money, st.session_state.table_num]]
             res = self.sheet1.values().append(spreadsheetId=self.spreadsheet_id1,
@@ -361,7 +361,7 @@ class Game:
         with self.container_robot.container():
             st.write("Do you want me to solve this for you?")
             st.image(st.session_state.im_robot)
-        st.session_state.x = 100
+        st.session_state.x = 20
         st.session_state.timer_num = 1
         w = 5000
         d = 4000
@@ -444,6 +444,7 @@ class Game:
                     st.session_state.timer_num += 1
                     time.sleep(1)
                     self.container_placeholder.empty()
+            st.session_state.out_of_time = 1
             self.win_lose()
 
     # This function is used in conjunction with the run_choice function to generate a winning or losing screen
@@ -457,35 +458,55 @@ class Game:
         self.container_captcha.empty()
         time.sleep(0.01)
         st.session_state.choice = 0
-        if st.session_state.user_answer == st.session_state.the_answers[st.session_state.run_num - 1]:
-            st.session_state.money += st.session_state.x / 100
-            # This is what updates Google Sheets
+        if st.session_state.out_of_time == 1:
+            st.session_state.out_of_time = 0
             stuff = [
-                [st.session_state.run_num, st.session_state.the_answers[st.session_state.run_num - 1], st.session_state.time_choice,
-                 "Self", "W",
+                [st.session_state.run_num, st.session_state.the_answers[st.session_state.run_num - 1], 20,
+                 "Out of time", "L",
                  st.session_state.money, st.session_state.table_num]]
             res = self.sheet1.values().append(spreadsheetId=self.spreadsheet_id1,
                                               range="Sheet1!A:G", valueInputOption="USER_ENTERED",
                                               insertDataOption="INSERT_ROWS", body={"values": stuff}).execute()
-            the_amount = str(st.session_state.x / 100)
             with self.container_captcha.container():
-                st.title("You got $" + the_amount)
-                st.image(st.session_state.im_money)
-                st.session_state.run_num += 1
-        else:
-            stuff = [
-                [st.session_state.run_num, st.session_state.the_answers[st.session_state.run_num - 1], st.session_state.time_choice,
-                 "Self", "L",
-                 st.session_state.money, st.session_state.table_num]]
-            res = self.sheet1.values().append(spreadsheetId=self.spreadsheet_id1,
-                                              range="Sheet1!A:G", valueInputOption="USER_ENTERED",
-                                              insertDataOption="INSERT_ROWS", body={"values": stuff}).execute()
-            st.session_state.run_num += 1
-            with self.container_captcha.container():
-                st.title("You got no money!")
+                st.title("You ran out of time")
                 st.image(st.session_state.im_wrong)
+        else:
+            if st.session_state.user_answer == st.session_state.the_answers[st.session_state.run_num - 1]:
+                st.session_state.money += st.session_state.x / 100
+                # This is what updates Google Sheets
+                stuff = [
+                    [st.session_state.run_num, st.session_state.the_answers[st.session_state.run_num - 1], st.session_state.time_choice,
+                    "Self", "W",
+                    st.session_state.money, st.session_state.table_num]]
+                res = self.sheet1.values().append(spreadsheetId=self.spreadsheet_id1,
+                                              range="Sheet1!A:G", valueInputOption="USER_ENTERED",
+                                              insertDataOption="INSERT_ROWS", body={"values": stuff}).execute()
+                the_amount = str(st.session_state.x / 100)
+                with self.container_captcha.container():
+                    st.title("You got $" + the_amount)
+                    st.image(st.session_state.im_money)
+                    st.session_state.run_num += 1
+            else:
+                stuff = [
+                    [st.session_state.run_num, st.session_state.the_answers[st.session_state.run_num - 1], st.session_state.time_choice,
+                    "Self", "L",
+                    st.session_state.money, st.session_state.table_num]]
+                res = self.sheet1.values().append(spreadsheetId=self.spreadsheet_id1,
+                                              range="Sheet1!A:G", valueInputOption="USER_ENTERED",
+                                              insertDataOption="INSERT_ROWS", body={"values": stuff}).execute()
+                st.session_state.run_num += 1
+                with self.container_captcha.container():
+                    st.title("You got no money!")
+                    st.image(st.session_state.im_wrong)
         st.session_state.to_continue = 1
         st.button("Play again", on_click=self.clear)
+
+
+    def end(self):
+        with self.col2:
+            self.container_captcha = st.empty()
+        with self.container_captcha.container():
+            st.title("Thank you for testing our game")
 
     # This function ends the game
     def run_end(self):
@@ -494,12 +515,13 @@ class Game:
             self.container_captcha = st.empty()
         with self.container_captcha.container():
             st.title("Thanks for playing!")
-            st.write("Click the link to return to Prolific and confirm you have completed this study [link] (https://app.prolific.co/submissions/complete?cc=CPRXHZJD)")
+            st.title("Click the link to return to Prolific and confirm you have completed this study [link] (https://app.prolific.co/submissions/complete?cc=CPRXHZJD)")
 
 
     # This is what runs the instructions page
     def run_instructions(self):
         st.session_state.run_num += 1
+        self.col1, self.col2, self.col3 = st.columns((1, 2, 3))
         with self.col1:
             self.container_robot = st.empty()
         with self.col2:
@@ -662,36 +684,34 @@ class Game:
     def run_end_survey1(self):
         st.session_state.to_continue = 1
         st.session_state.run_num += 1
-        with self.col1:
-            self.container_robot = st.empty()
-        with self.container_robot.container():
-            st.image(st.session_state.im_robot)
+        self.col1, self.col2, self.col3 = st.columns((1, 15, 1))
         with self.col2:
             self.container_captcha = st.empty()
         with self.container_captcha.container():
+            st.image(st.session_state.im_robot)
             with st.form("AIsurvey"):
                 st.write("Please rate the robot using the scale from 1 (Not at all) to 7 (Very). Use (Does not apply) if you think it does not apply.")
-                st.select_slider('Reliable', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'], key="reliable")
-                st.select_slider('Competent', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'], key="competent")
-                st.select_slider('Ethical', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'], key="ethical")
-                st.select_slider('Transparent', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'], key="transparent")
-                st.select_slider('Benevolent', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'], key="benevolent")
-                st.select_slider('Predictable', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'], key="predictable")
-                st.select_slider('Skilled', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'], key="skilled")
-                st.select_slider('Principled', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'], key="principled")
-                st.select_slider('Genuine', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'], key="genuine")
-                st.select_slider('Kind', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'], key="kind")
-                st.select_slider('Dependable', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'], key="dependable")
-                st.select_slider('Capable', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'], key="capable")
-                st.select_slider('Moral', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'], key="moral")
-                st.select_slider('Sincere', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'], key="sincere")
-                st.select_slider('Considerate', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'], key="considerate")
-                st.select_slider('Consistent', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'], key="consistent")
-                st.select_slider('Meticulous', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'], key="meticulous")
-                st.select_slider('Has integrity', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'], key="integrity")
-                st.select_slider('Select 3', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'], key="check")
-                st.select_slider('Candid', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'], key="candid")
-                st.select_slider('Has goodwill', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'], key="goodwill")
+                st.radio('Reliable', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'], key="reliable", horizontal=True)
+                st.radio('Competent', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'], key="competent", horizontal=True)
+                st.radio('Ethical', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'], key="ethical", horizontal=True)
+                st.radio('Transparent', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'], key="transparent", horizontal=True)
+                st.radio('Benevolent', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'], key="benevolent", horizontal=True)
+                st.radio('Predictable', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'], key="predictable", horizontal=True)
+                st.radio('Skilled', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'], key="skilled", horizontal=True)
+                st.radio('Principled', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'], key="principled", horizontal=True)
+                st.radio('Genuine', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'], key="genuine", horizontal=True)
+                st.radio('Kind', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'], key="kind", horizontal=True)
+                st.radio('Dependable', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'], key="dependable", horizontal=True)
+                st.radio('Capable', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'], key="capable", horizontal=True)
+                st.radio('Moral', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'], key="moral", horizontal=True)
+                st.radio('Sincere', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'], key="sincere", horizontal=True)
+                st.radio('Considerate', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'], key="considerate", horizontal=True)
+                st.radio('Consistent', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'], key="consistent", horizontal=True)
+                st.radio('Meticulous', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'], key="meticulous", horizontal=True)
+                st.radio('Has integrity', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'], key="integrity", horizontal=True)
+                st.radio('Select 3', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'], key="check", horizontal=True)
+                st.radio('Candid', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'], key="candid", horizontal=True)
+                st.radio('Has goodwill', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'], key="goodwill", horizontal=True)
                 st.form_submit_button("Submit", on_click=self.submit_ai)
 
 
@@ -706,27 +726,27 @@ class Game:
         with self.container_captcha.container():
             with st.form("AIsurvey"):
                 st.write("Please rate the robot using the scale from 1 (Not at all) to 7 (Very). Use (Does not apply) if you think it does not apply.")
-                st.select_slider('Reliable', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'], key="reliable")
-                st.select_slider('Competent', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'],key="competent")
-                st.select_slider('Ethical', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'], key="ethical")
-                st.select_slider('Transparent', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'],key="transparent")
-                st.select_slider('Benevolent', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'],key="benevolent")
-                st.select_slider('Predictable', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'],key="predictable")
-                st.select_slider('Skilled', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'], key="skilled")
-                st.select_slider('Principled', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'],key="principled")
-                st.select_slider('Genuine', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'], key="genuine")
-                st.select_slider('Kind', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'], key="kind")
-                st.select_slider('Dependable', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'],key="dependable")
-                st.select_slider('Capable', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'], key="capable")
-                st.select_slider('Select 7', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'], key="check")
-                st.select_slider('Moral', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'], key="moral")
-                st.select_slider('Sincere', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'], key="sincere")
-                st.select_slider('Considerate', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'],key="considerate")
-                st.select_slider('Consistent', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'],key="consistent")
-                st.select_slider('Meticulous', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'],key="meticulous")
-                st.select_slider('Has integrity', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'],key="integrity")
-                st.select_slider('Candid', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'], key="candid")
-                st.select_slider('Has goodwill', options=['Does not apply', '1', '2', '3', '4', '5', '6', '7'],key="goodwill")
+                st.radio('Reliable', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'], key="reliable", horizontal=True)
+                st.radio('Competent', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'],key="competent", horizontal=True)
+                st.radio('Ethical', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'], key="ethical", horizontal=True)
+                st.radio('Transparent', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'],key="transparent", horizontal=True)
+                st.radio('Benevolent', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'],key="benevolent", horizontal=True)
+                st.radio('Predictable', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'],key="predictable", horizontal=True)
+                st.radio('Skilled', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'], key="skilled", horizontal=True)
+                st.radio('Principled', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'],key="principled", horizontal=True)
+                st.radio('Genuine', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'], key="genuine", horizontal=True)
+                st.radio('Kind', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'], key="kind", horizontal=True)
+                st.radio('Dependable', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'],key="dependable", horizontal=True)
+                st.radio('Capable', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'], key="capable", horizontal=True)
+                st.radio('Select 7', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'], key="check", horizontal=True)
+                st.radio('Moral', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'], key="moral", horizontal=True)
+                st.radio('Sincere', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'], key="sincere", horizontal=True)
+                st.radio('Considerate', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'],key="considerate", horizontal=True)
+                st.radio('Consistent', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'],key="consistent", horizontal=True)
+                st.radio('Meticulous', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'],key="meticulous", horizontal=True)
+                st.radio('Has integrity', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'],key="integrity", horizontal=True)
+                st.radio('Candid', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'], key="candid", horizontal=True)
+                st.radio('Has goodwill', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'],key="goodwill", horizontal=True)
                 st.form_submit_button("Submit", on_click=self.submit_ai)
 
     def submit_ai(self):

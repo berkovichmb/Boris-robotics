@@ -562,16 +562,6 @@ class Game:
             uml_logo = Image.open("uml.png")
             st.image(uml_logo)
             st.markdown("Consent for Research Participation  \nIRB #: sdgfasdf  \nIRB Approval Date: fdgdfgds")
-
-            with open('style_consent.css') as f:
-                st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
-                # customizes button css
-                m = st.markdown("""<style>
-                    div.stButton{
-                    display:block;
-                    margin:auto;
-                    }
-                    </style>""", unsafe_allow_html=True)
             st.markdown(">Study Title: Older adults trusting AI.  "
                         "\nFunding source: The National Science Foundation (NSF) is funding this research study."
                         "  \n  \nResearcher[s]: Paul Robinette, Electrical and Computer engineering professor; Russell Perkins, PhD candidate; Boris Berkovich, Bachelor's candidate, EECE"

@@ -559,6 +559,15 @@ class Game:
         with self.col2:
             self.container_captcha = st.empty()
         with self.container_captcha.container():
+            with open('style_consent.css') as f:
+                st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
+                # customizes button css
+                m = st.markdown("""<style>
+                    div.stButton{
+                    display:block;
+                    margin:auto;
+                    }
+                    </style>""", unsafe_allow_html=True)
             uml_logo = Image.open("uml.png")
             st.image(uml_logo)
             st.markdown("Consent for Research Participation  \nIRB #: sdgfasdf  \nIRB Approval Date: fdgdfgds")

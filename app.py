@@ -392,7 +392,7 @@ class Game:
         st.session_state.out_of_time = 1
         with self.container_captcha.container():
             st.write("You ran out of time")
-            st.button("Acknowledge", on_click=self.win_lose_robot)
+            st.button("Acknowledge", on_click=self.answer_robot)
 
     # Second run
     def run_intro(self):

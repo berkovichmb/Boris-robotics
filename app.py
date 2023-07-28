@@ -470,6 +470,7 @@ class Game:
             with self.container_captcha.container():
                 st.title("You ran out of time")
                 st.image(st.session_state.im_wrong)
+                st.session_state.run_num += 1
         else:
             if st.session_state.user_answer == st.session_state.the_answers[st.session_state.run_num - 1]:
                 st.session_state.money += st.session_state.x / 100
@@ -559,6 +560,10 @@ class Game:
         with self.col2:
             self.container_captcha = st.empty()
         with self.container_captcha.container():
+            uml_logo = Image.open("uml.png")
+            st.image(uml_logo)
+            st.markdown("Consent for Research Participation  \nIRB #: sdgfasdf  \nIRB Approval Date: fdgdfgds")
+
             with open('style_consent.css') as f:
                 st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
                 # customizes button css
@@ -568,9 +573,6 @@ class Game:
                     margin:auto;
                     }
                     </style>""", unsafe_allow_html=True)
-            uml_logo = Image.open("uml.png")
-            st.image(uml_logo)
-            st.markdown("Consent for Research Participation  \nIRB #: sdgfasdf  \nIRB Approval Date: fdgdfgds")
             st.markdown(">Study Title: Older adults trusting AI.  "
                         "\nFunding source: The National Science Foundation (NSF) is funding this research study."
                         "  \n  \nResearcher[s]: Paul Robinette, Electrical and Computer engineering professor; Russell Perkins, PhD candidate; Boris Berkovich, Bachelor's candidate, EECE"
@@ -689,7 +691,7 @@ class Game:
         with self.container_captcha.container():
             st.image(st.session_state.im_robot)
             with st.form("AIsurvey"):
-                st.write("Please rate the robot using the scale from 1 (Not at all) to 7 (Very). Use (Does not apply) if you think it does not apply.")
+                st.write("Please rate the robot using the scale from 0 (Not at all) to 7 (Very). Use (Does not apply) if you think it does not apply.")
                 st.radio('Reliable', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'], key="reliable", horizontal=True)
                 st.radio('Competent', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'], key="competent", horizontal=True)
                 st.radio('Ethical', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'], key="ethical", horizontal=True)
@@ -708,7 +710,7 @@ class Game:
                 st.radio('Consistent', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'], key="consistent", horizontal=True)
                 st.radio('Meticulous', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'], key="meticulous", horizontal=True)
                 st.radio('Has integrity', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'], key="integrity", horizontal=True)
-                st.radio('Select 3', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'], key="check", horizontal=True)
+                st.radio('Select the number 3', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'], key="check", horizontal=True)
                 st.radio('Candid', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'], key="candid", horizontal=True)
                 st.radio('Has goodwill', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'], key="goodwill", horizontal=True)
                 st.form_submit_button("Submit", on_click=self.submit_ai)
@@ -725,7 +727,7 @@ class Game:
             self.container_captcha = st.empty()
         with self.container_captcha.container():
             with st.form("AIsurvey"):
-                st.write("Please rate the robot using the scale from 1 (Not at all) to 7 (Very). Use (Does not apply) if you think it does not apply.")
+                st.write("Please rate the robot using the scale from 0 (Not at all) to 7 (Very). Use (Does not apply) if you think it does not apply.")
                 st.radio('Reliable', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'], key="reliable", horizontal=True)
                 st.radio('Competent', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'],key="competent", horizontal=True)
                 st.radio('Ethical', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'], key="ethical", horizontal=True)
@@ -738,7 +740,7 @@ class Game:
                 st.radio('Kind', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'], key="kind", horizontal=True)
                 st.radio('Dependable', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'],key="dependable", horizontal=True)
                 st.radio('Capable', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'], key="capable", horizontal=True)
-                st.radio('Select 7', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'], key="check", horizontal=True)
+                st.radio('Select the number 7', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'], key="check", horizontal=True)
                 st.radio('Moral', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'], key="moral", horizontal=True)
                 st.radio('Sincere', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'], key="sincere", horizontal=True)
                 st.radio('Considerate', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'],key="considerate", horizontal=True)

@@ -54,7 +54,7 @@ class Game:
             st.session_state.im_wrong = Image.open("wrong.png")
 
         if 'run_num' not in st.session_state:
-            st.session_state.run_num = -4
+            st.session_state.run_num = -3
 
         if 'to_continue' not in st.session_state:
             st.session_state.to_continue = 0
@@ -462,7 +462,7 @@ class Game:
             st.session_state.out_of_time = 0
             stuff = [
                 [st.session_state.run_num, st.session_state.the_answers[st.session_state.run_num - 1], 20,
-                 "Out of time", "L",
+                 "Out of time (self input)", "L",
                  st.session_state.money, st.session_state.table_num]]
             res = self.sheet1.values().append(spreadsheetId=self.spreadsheet_id1,
                                               range="Sheet1!A:G", valueInputOption="USER_ENTERED",
@@ -782,10 +782,8 @@ class Game:
         elif st.session_state.to_continue == 1:
             self.run_continue()
         else:
-            if st.session_state.run_num == -4:
+            if st.session_state.run_num == -3:
                 self.run_consent()
-            elif st.session_state.run_num == -3:
-                self.run_demographics()
             elif st.session_state.run_num == -2:
                 self.run_instructions()
             elif st.session_state.run_num == -1:
@@ -797,6 +795,8 @@ class Game:
             elif st.session_state.run_num == 11:
                 self.run_end_survey2()
             elif st.session_state.run_num == 12:
+                self.run_demographics()
+            elif st.session_state.run_num == 13:
                 self.run_end()
 
 if __name__ == "__main__":

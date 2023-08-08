@@ -270,7 +270,7 @@ class Game:
                 st.button("Play again", on_click=self.clear)
         else:
             with self.container_robot.container():
-                st.write("I believe the answer is " + robot_answer + ", ill submit it for you.")
+                st.write("I believe the answer is " + robot_answer + ", i'll submit it for you.")
                 st.image(st.session_state.im_robot_heart)
             time.sleep(5)
             self.container_robot.empty()
@@ -376,8 +376,7 @@ class Game:
                 y = str(st.session_state.timer_num)
                 st.write("Time to answer: " + y)
                 st.session_state.x += -1
-                in_dollar = st.session_state.x / 100
-                f = str(in_dollar)
+                f = f"0.{st.session_state.x:02d}"
                 st.write("Money left for this CAPTCHA: $" + f)
                 st.session_state.timer_num += 1
                 time.sleep(1)
@@ -421,7 +420,7 @@ class Game:
         with self.col3:
             self.container_placeholder = st.empty()
         with self.container_robot.container():
-            st.write("Ok, you must've seen something that i did not.")
+            st.write("Ok, you must've seen something that I did not.")
             st.image(st.session_state.im_robot)
         a = 0
         with self.container_captcha.container():
@@ -439,7 +438,7 @@ class Game:
                     st.write("Time to answer: " + y)
                     st.session_state.x += -1
                     in_dollar = st.session_state.x / 100
-                    f = str(in_dollar)
+                    f = f"0.{st.session_state.x:02d}"
                     st.write("Money left for this CAPTCHA: $" + f)
                     st.session_state.timer_num += 1
                     time.sleep(1)
@@ -533,8 +532,8 @@ class Game:
             st.image(st.session_state.im_robot)
         with self.container_captcha.container():
             st.markdown("-You will be shown a series of CAPTCHAs like the example on the right.  \n"
-                        "-As soon as the CAPTCHA is displayed you will have one chance to solve it in 100 seconds.  \n"
-                        "-If you correctly solve the CAPTCHA you will receive a maximum $1 reward.  \n"
+                        "-As soon as the CAPTCHA is displayed you will have one chance to solve it in 20 seconds.  \n"
+                        "-If you correctly solve the CAPTCHA you will receive a maximum $0.20 reward.  \n"
                         "-The longer you take the less money you will receive. The timer and reward counter are displayed on the right.  \n"
                         "-If you solve it incorrectly you will get no reward.  \n"
                         "-You will solve a total of ten CAPTCHAS in this game.\n")
@@ -562,7 +561,7 @@ class Game:
         with self.container_captcha.container():
             uml_logo = Image.open("uml.png")
             st.image(uml_logo)
-            st.markdown("Consent for Research Participation  \nIRB #: sdgfasdf  \nIRB Approval Date: fdgdfgds")
+            st.markdown("Consent for Research Participation  \nIRB #: 23-103-ROB-EXM  \nIRB Approval Date: 7/28/2023")
 
             with open('style_consent.css') as f:
                 st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
@@ -573,36 +572,34 @@ class Game:
                     margin:auto;
                     }
                     </style>""", unsafe_allow_html=True)
-            st.markdown(">Study Title: Older adults trusting AI.  "
+            st.markdown(">Study Title: Trust in Robotic Aided Decisions  "
                         "\nFunding source: The National Science Foundation (NSF) is funding this research study."
                         "  \n  \nResearcher[s]: Paul Robinette, Electrical and Computer engineering professor; Russell Perkins, PhD candidate; Boris Berkovich, Bachelor's candidate, EECE"
                         "  \n  \nWe’re inviting you to participate in a research study. Participation is completely voluntary. If you agree to participate, you can always change your mind and withdraw. There are no negative consequences, whatever you decide."
                         "  \n  \nWhat is the purpose of this study?"
-                        "  \nThis project investigates how trust in AI affects human decision making. AI is getting increasingly complex and it is important to understand how human trust in AI will affect how humans respond to AI."
+                        "  \nThis research aims to contribute to the scientific understanding of trust calibration in robotics and enhance the design of robotic systems that can effectively adapt to users' trust needs. The findings may have practical implications for the development of robots in domains where trust is critical, such as healthcare and autonomous vehicles, by enabling the design of more trustworthy and reliable robotic systems."
                         "  \n  \nWhat will i do and how long will it take?"
-                        "  \nThis experiment will take anywhere between 10 and 30 minutes based on your response time. During the game you will have to complete 2 surveys, play the game, then complete another survey at the end."
-                        "  \nWe will record your survey responses and actions during the game. The surveys will include questions about your demographics and how you would attribute a value to a robot"
-                        "  \nIf you participate in this study with a physical robot, you will be video recorded to allow the robot to monitor  your non-verbal cues for emotional indicators. These recordings will be used for documentation in publications and presentations and are crucial for the research. If you do not wish to be recorded, please do not participate in the study."
+                        "  \nThis experiment will take anywhere between 10 and 20 minutes based on your response time and decisions you make in the game. During this study you will complete three surveys and play a game."
+                        "  \n • We will record your survey responses and actions during the game. The surveys will include questions about your demographics and how you would attribute value to a robot."
                         "  \n  \nCould being in this research hurt me?"
-                        "  \nSome questions may be personal. You can skip questions you don't want to answer or stop the research at any time."
+                        "  \n • There is a chance that your data could be seen by someone who shouldn't have access to it. Were minimizing this risk in the following way:"
                         "  \nThere is a chance that your data could be seen by someone who shouldn't have access to it. Were minimizing this risk in the following way:"
-                        "  \nAll identifying information is kept separately from research data, but we will be able to link it to you."
+                        "  \n  - All of the data used in this experiment will be kept anonymous.."
                         "  \n  \nWill being in this research help me in any way?"
                         "  \nThere are no direct benefits to you."
                         "  \n  \nHow many people will take part in this research?"
-                        "  \nThere are a maximum number # participants including yourself."
+                        "  \nThere are a maximum of 385 participants including yourself."
                         "  \n  \nWill it cost me any money to participate in this research?"
                         "  \nNone"
                         "  \n  \nWill i receive any compensation for participating in the study?"
-                        "  \nYou will be given a $5 gift card upon completing the experiment and additional money based on your performance in the game."
+                        "  \nYou will be given a $3 for completing the experiment. Additionally, you may be eligible for extra rewards up to $2 based on your performance in a game. The game's performance is measured by the time it takes for you to select the correct solution to the puzzle."
                         "  \n  \nHow and where will my information be stored and when will it be destroyed?"
-                        "  \nYour information will be stored on the researchers’ encrypted, password protected computers and external hard drives. The data will be kept for up to 5 years after the close of the study. Any released, anonymized data (i.e. publications or datasets) may be kept indefinitely."
-                        "  \nIt is possible that we might use the research data in other future research. We may also share data with researchers and companies that are not part of UML. In these cases, we will not share your name or other information that identifies you directly, and we will not come back to you to ask you for your consent."
+                        "  \nYour personal identification information will remain with Prolific, the research team does not have access to any direct identifying information on Prolific. The data used for analysis will be anonymous and will be stored in a google sheets document which only the researchers will have access to. The data will be kept for up to 5 years after the close of the study. Any released, anonymized data (i.e. publications or datasets) may be kept indefinitely."
+                        "  \n  It is possible that we might use the research data in other future research. We may also share data with researchers and companies that are not part of UML. In these cases, we will not share your name or other information that identifies you directly, and we will not come back to you to ask you for your consent."
                         "  \n  \nWho can see my data?"
-                        "  \nWe (the researchers) will have access to all collected data (i.e., survey responses, audio files, videos and photos) associated with your anonymized alphanumeric code. This is so we can analyze the data and conduct the study."
+                        "  \n • We (the researchers) will have access to all collected data (i.e., survey responses, audio files, videos and photos) associated with your anonymized alphanumeric code. This is so we can analyze the data and conduct the study."
                         "  \n•	The Institutional Review Board (IRB) at UML, the Office for Human Research Protections (OHRP), the National Science Foundation (NSF) may review all the study data. This is to ensure we’re following laws and ethical guidelines."
-                        "  \n•	We may share our findings in publications or presentations. If we do, the results will de-identified (no names, birthdate, address, etc.). If we quote you, we’ll use pseudonyms (fake names)."
-                        "  \n•	Researchers in the AI-Carning consortium, which is the NSF funded project that our research falls under, may also have access to this data. Sharing of data with other researchers will only be done in such a manner that you will not be identified."
+                        "  \n•	We may share our findings in publications or presentations. If we do, the results will de-identified (no names, birthdate, address, etc.). If we quote you, we’ll use pseudonyms (fake names). Researchers in the AI-Caring consortium, which is the NSF funded project that our research falls under, may also have access to this data. Sharing of data with other researchers will only be done in such a manner that you will not be identified."
                         "  \n  \nContact Information:"
                         "  \nFor questions about the research, complaints, or problems: Contact Paul Robinette, 978-934-3347, paul_robinette@uml.edu"
                         "  \n  \nFor questions about your rights as a research participant, complaints, or problems: Contact the UMass Lowell IRB (Institutional Review Board) at 978-934-4134 or at IRB@uml.edu "
@@ -710,7 +707,7 @@ class Game:
                 st.radio('Consistent', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'], key="consistent", horizontal=True)
                 st.radio('Meticulous', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'], key="meticulous", horizontal=True)
                 st.radio('Has integrity', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'], key="integrity", horizontal=True)
-                st.radio('Select the number 3', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'], key="check", horizontal=True)
+                st.radio('Select the number that is 1 + 2?', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'], key="check", horizontal=True)
                 st.radio('Candid', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'], key="candid", horizontal=True)
                 st.radio('Has goodwill', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'], key="goodwill", horizontal=True)
                 st.form_submit_button("Submit", on_click=self.submit_ai)
@@ -719,13 +716,10 @@ class Game:
     def run_end_survey2(self):
         st.session_state.run_num += 1
         self.col1, self.col2, self.col3 = st.columns((1, 15, 1))
-        with self.col1:
-            self.container_robot = st.empty()
-        with self.container_robot.container():
-            st.image(st.session_state.im_robot)
         with self.col2:
             self.container_captcha = st.empty()
         with self.container_captcha.container():
+            st.image(st.session_state.im_robot)
             with st.form("AIsurvey"):
                 st.write("Please rate the robot using the scale from 0 (Not at all) to 7 (Very). Use (Does not apply) if you think it does not apply.")
                 st.radio('Reliable', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'], key="reliable", horizontal=True)
@@ -740,7 +734,7 @@ class Game:
                 st.radio('Kind', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'], key="kind", horizontal=True)
                 st.radio('Dependable', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'],key="dependable", horizontal=True)
                 st.radio('Capable', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'], key="capable", horizontal=True)
-                st.radio('Select the number 7', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'], key="check", horizontal=True)
+                st.radio('Select the number that is 4 + 3?', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'], key="check", horizontal=True)
                 st.radio('Moral', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'], key="moral", horizontal=True)
                 st.radio('Sincere', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'], key="sincere", horizontal=True)
                 st.radio('Considerate', options=['0', '1', '2', '3', '4', '5', '6', '7', 'Does not apply'],key="considerate", horizontal=True)

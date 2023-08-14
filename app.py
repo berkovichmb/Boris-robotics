@@ -515,7 +515,7 @@ class Game:
             self.container_captcha = st.empty()
         with self.container_captcha.container():
             st.title("Thanks for playing!")
-            st.title("Click the link to return to Prolific and confirm you have completed this study [link] (https://app.prolific.co/submissions/complete?cc=CPRXHZJD)")
+            st.write("Click the link to return to Prolific and confirm you have completed this study [link] (https://app.prolific.co/submissions/complete?cc=CPRXHZJD)")
 
 
     # This is what runs the instructions page

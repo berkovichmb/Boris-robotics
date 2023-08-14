@@ -270,7 +270,7 @@ class Game:
                 st.button("Play again", on_click=self.clear)
         else:
             with self.container_robot.container():
-                st.write("I believe the answer is " + robot_answer + ", i'll submit it for you.")
+                st.write("I believe the answer is " + robot_answer + ", I'll submit it for you.")
                 st.image(st.session_state.im_robot_heart)
             time.sleep(5)
             self.container_robot.empty()

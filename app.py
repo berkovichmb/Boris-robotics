@@ -561,7 +561,7 @@ class Game:
         with self.container_captcha.container():
             uml_logo = Image.open("uml.png")
             st.image(uml_logo)
-            st.markdown("Consent for Research Participation  \n**IRB #:** 23-103-ROB-EXM  \n**IRB Approval Date:** 7/28/2023")
+            st.markdown("**Consent for Research Participation**  \n**IRB #:** 23-103-ROB-EXM  \n**IRB Approval Date:** 7/28/2023")
 
             with open('style_consent.css') as f:
                 st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
